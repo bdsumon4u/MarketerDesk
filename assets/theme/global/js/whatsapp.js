@@ -440,6 +440,9 @@
             displayImagePreview(file);
         }
 
+        var formData = new FormData();
+        formData.append($("#add_media").attr('name'), file);
+
         // upload file
         $.ajax({
           xhr: function () {
@@ -453,7 +456,8 @@
                   percentComplete = parseInt(percentComplete * 100);
                   console.log(percentComplete);
 
-                  if (percentComplete === 100) {
+                    if (percentComplete === 100) {
+                        console.log('complete');
                   }
                 }
               },
@@ -464,7 +468,7 @@
           },
           url: "/upload-wsa-file",
           type: "POST",
-          data: JSON.stringify(fileuploaddata),
+          data: formData,
           contentType: "application/json",
           dataType: "json",
           success: function (result) {
