@@ -99,8 +99,8 @@
                                     <div class="col-6">
                                         <label for="whatsapp_sending_mode" class="form-label">{{translate('Choose Sending Method')}}</label>
                                         <select class="form-select repeat-scale" name="whatsapp_sending_mode" id="whatsapp_sending_mode">
-                                            <option {{ $allowed_access->type == \App\Models\PricingPlan::USER ? "selected" : "disabled"}}  value="cloud_api">{{translate('Cloud API')}} {{ $allowed_access->type == \App\Models\PricingPlan::ADMIN ? translate("(Access Denied)") : " "}}</option>
-                                            <option {{ $allowed_access->type == \App\Models\PricingPlan::ADMIN ? "selected" : " "}} value="without_cloud_api">{{ translate('Without Cloud API') }}</option>
+                                            <option selected value="without_cloud_api">{{ translate('Without Cloud API') }}</option>
+                                            <option {{ $allowed_access->type == \App\Models\PricingPlan::ADMIN ? "disabled" : ""}} value="cloud_api">{{translate('Cloud API')}} {{ $allowed_access->type == \App\Models\PricingPlan::ADMIN ? translate("(Access Denied)") : " "}}</option>
                                         </select>
                                     </div>
                                     <div class="col-6">
