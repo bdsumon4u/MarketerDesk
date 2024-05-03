@@ -45,4 +45,44 @@ class WebController extends Controller
 
         return view('frontend.pages', compact('title',"description",'key'));
     }
+
+    /**
+     * @param $request
+     * @return array|null
+     */
+    public function findAndUploadFile($request): ?array
+    {
+
+        $fileTypes = ['image', 'document', 'audio', 'video'];
+
+        foreach ($fileTypes as $fileType) {
+
+            if ($request->hasFile($fileType)) {
+
+                $file     = $request->file($fileType);
+                $fileName = uniqid() . time() . '.' . $file->getClientOriginalExtension();
+                $path     = filePath()['whatsapp']['path_' . $fileType];
+
+                if (!file_exists($path)) {
+
+                    mkdir($path, 0777, true);
+                }
+                try {
+                    $file->move($path, $fileName);
+
+                    return [
+
+                        'type'     => $fileType,
+                        'url_file' => $path . '/' . $fileName,
+                        'name'     => $fileName
+                    ];
+                } catch (\Exception $e) {
+
+                    return [];
+                }
+            }
+        }
+
+        return [];
+    }
 }

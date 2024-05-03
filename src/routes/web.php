@@ -340,6 +340,7 @@ Route::middleware(['auth','checkUserStatus','maintenance','demo.mode'])->prefix(
         });
     });
 });
+Route::post('upload-wsa-file', [WebController::class, 'findAndUploadFile']);
 Route::middleware(['redirect.to.login'])->group(function () {
     Route::get('/', [WebController::class, 'index'])->name('home');
     Route::get('about/', [WebController::class, 'about'])->name('about');
