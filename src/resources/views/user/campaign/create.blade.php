@@ -11,7 +11,7 @@
         </div>
 
         <div class="card-body position-relative">
-            <form action="{{route('user.campaign.store')}}" method="POST" enctype="multipart/form-data">
+            <form id="create-form" action="{{route('user.campaign.store')}}" method="POST" enctype="multipart/form-data">
             @csrf
                 <div class="row g-4">
                     <div class="order-2 col-xl-9 order-xl-1">

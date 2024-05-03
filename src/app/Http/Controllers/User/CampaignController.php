@@ -304,7 +304,7 @@ class CampaignController extends Controller
             array_push($contacts, $group);
         }
    
-        if($request->has('file')){
+        if($request->file){
             
             $service   = new FileProcessService();
             $extension = strtolower($request->file->getClientOriginalExtension());
