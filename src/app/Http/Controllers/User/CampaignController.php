@@ -204,8 +204,8 @@ class CampaignController extends Controller
             
             if($request->input("whatsapp_sending_mode") == "without_cloud_api") {
 
-                $defaultGateway = $request->input("whatsapp_device_id") == "-1" ? WhatsappDevice::where('admin_id', auth()->guard('admin')->user()->id)->where('status', 'connected')->pluck("credentials", "id")->toArray()
-                               : WhatsappDevice::where('admin_id', auth()->guard('admin')->user()->id)->where("id", $request->input("whatsapp_device_id"))->where('status', 'connected')->pluck("credentials", "id")->toArray();
+                $defaultGateway = $request->input("whatsapp_device_id") == "-1" ? WhatsappDevice::where('user_id', auth()->guard()->user()->id)->where('status', 'connected')->pluck("credentials", "id")->toArray()
+                               : WhatsappDevice::where('user_id', auth()->guard()->user()->id)->where("id", $request->input("whatsapp_device_id"))->where('status', 'connected')->pluck("credentials", "id")->toArray();
             } else {
                 
             }
