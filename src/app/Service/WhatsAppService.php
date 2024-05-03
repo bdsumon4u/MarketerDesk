@@ -41,7 +41,8 @@ class WhatsAppService
             if ($request->hasFile($file)) {
 
                 $message = $file;
-                $rules = ['required', new MessageFileValidationRule($file)];
+                // maximum allowed file size: 100MB
+                $rules = ['required', new MessageFileValidationRule($file), 'max:100000'];
                 break;
             }
         }
