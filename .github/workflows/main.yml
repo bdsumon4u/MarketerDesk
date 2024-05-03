@@ -28,7 +28,7 @@ jobs:
       - name: Deploy to Servers
         run: |
           echo "Deploying to server"
-            ssh -o "IdentitiesOnly=yes" -i /tmp/private_key marketerdesk@marketerdesk.com "cd public_html && git pull origin master --force" || echo -e "\e[31mError deploying to server\e[0m" # Red color
+            ssh -o "IdentitiesOnly=yes" -i /tmp/private_key marketer@marketerdesk.com "cd public_html && git pull origin master --force" || echo -e "\e[31mError deploying to server\e[0m" # Red color
 
       - name: Cleanup temporary files
         run: rm /tmp/private_key
