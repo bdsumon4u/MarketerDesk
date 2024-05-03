@@ -27,59 +27,6 @@
                 </a>
             </li>
 
-            <li class="sidebar-menu-title" data-text="{{ translate('Membership Management')}}">{{ translate('Membership Management')}}</li>
-
-            @php
-                $isMembershipActive = request()->routeIs('user.plan.create', 'user.plan.subscription', 'user.payment.preview', 'user.payment.confirm', 'user.manual.payment.confirm');
-            @endphp
-
-            <li class="sidebar-menu-item">
-                <a class="sidebar-menu-link {{menuActive(['user.plan.create', 'user.payment.preview', 'user.manual.payment.confirm', 'user.payment.confirm'])}}" href="{{route('user.plan.create')}}">
-                    <span><i class="las la-money-check-alt"></i></span>
-                    <p>{{ translate('Buy Or Renew Plans')}}</p>
-                </a>
-            </li>
-
-            <li class="sidebar-menu-item">
-                <a class="sidebar-menu-link {{menuActive('user.plan.subscription')}}" href="{{route('user.plan.subscription')}}">
-                    <span><i class="las la-file-invoice-dollar"></i></span>
-                    <p>{{ translate('Subscriptions Logs')}}</p>
-                </a>
-            </li>
-
-            <li class="sidebar-menu-title" data-text="{{translate('Contact Management')}}">{{ translate('Contact Management')}}</li>
-            
-            @php
-                $contactRouteNames = [
-                    'user.contact.index',
-                    'user.contact.create',
-                    'user.contact.settings.index',
-                    'user.contact.group.index',
-                ];
-                $isContactActive = request()->routeIs($contactRouteNames);
-            @endphp
-            
-            <li class="sidebar-menu-item">
-                <a class="sidebar-menu-link {{menuActive(['user.contact.group.index'])}}" href="{{route('user.contact.group.index')}}">
-                    <span><i class="las la-users"></i></span>
-                    <p>{{ translate('Group')}}</p>
-                </a>
-            </li>
-
-            <li class="sidebar-menu-item">
-                <a class="sidebar-menu-link {{menuActive(['user.contact.index', 'user.contact.create'])}}" href="{{route('user.contact.index')}}">
-                    <span><i class="las la-address-book"></i></span>
-                    <p>{{ translate('Contact Details')}}</p>
-                </a>
-            </li>
-
-            <li class="sidebar-menu-item">
-                <a class="sidebar-menu-link {{menuActive(['user.contact.settings.index'])}}" href="{{route('user.contact.settings.index')}}">
-                    <span><i class="las la-tag"></i></span>
-                    <p>{{ translate('Contact Attribute')}}</p>
-                </a>
-            </li>
-
             <li class="sidebar-menu-title" data-text="{{translate('Communications Hub')}}">{{ translate('Communications Hub')}}</li>
 
             @php
@@ -253,6 +200,39 @@
                 </a>
             </li>
 
+            <li class="sidebar-menu-title" data-text="{{translate('Contact Management')}}">{{ translate('Contact Management')}}</li>
+            
+            @php
+                $contactRouteNames = [
+                    'user.contact.index',
+                    'user.contact.create',
+                    'user.contact.settings.index',
+                    'user.contact.group.index',
+                ];
+                $isContactActive = request()->routeIs($contactRouteNames);
+            @endphp
+            
+            <li class="sidebar-menu-item">
+                <a class="sidebar-menu-link {{menuActive(['user.contact.group.index'])}}" href="{{route('user.contact.group.index')}}">
+                    <span><i class="las la-users"></i></span>
+                    <p>{{ translate('Group')}}</p>
+                </a>
+            </li>
+
+            <li class="sidebar-menu-item">
+                <a class="sidebar-menu-link {{menuActive(['user.contact.index', 'user.contact.create'])}}" href="{{route('user.contact.index')}}">
+                    <span><i class="las la-address-book"></i></span>
+                    <p>{{ translate('Contact Details')}}</p>
+                </a>
+            </li>
+
+            <li class="sidebar-menu-item">
+                <a class="sidebar-menu-link {{menuActive(['user.contact.settings.index'])}}" href="{{route('user.contact.settings.index')}}">
+                    <span><i class="las la-tag"></i></span>
+                    <p>{{ translate('Contact Attribute')}}</p>
+                </a>
+            </li>
+
             <li class="sidebar-menu-title" data-text="{{translate('Message Templates')}}">{{ translate('Message Templates')}}</li>
 
             @php
@@ -298,6 +278,26 @@
                 <a class="sidebar-menu-link {{menuActive(['user.mail.gateway.configuration', 'user.mail.edit'])}}" href="{{route('user.mail.gateway.configuration')}}">
                     <span><i class="fa-solid fa-square-envelope"></i></span>
                     <p>{{ translate('Email')}}</p>
+                </a>
+            </li>
+
+            <li class="sidebar-menu-title" data-text="{{ translate('Membership Management')}}">{{ translate('Membership Management')}}</li>
+
+            @php
+                $isMembershipActive = request()->routeIs('user.plan.create', 'user.plan.subscription', 'user.payment.preview', 'user.payment.confirm', 'user.manual.payment.confirm');
+            @endphp
+
+            <li class="sidebar-menu-item">
+                <a class="sidebar-menu-link {{menuActive(['user.plan.create', 'user.payment.preview', 'user.manual.payment.confirm', 'user.payment.confirm'])}}" href="{{route('user.plan.create')}}">
+                    <span><i class="las la-money-check-alt"></i></span>
+                    <p>{{ translate('Buy Or Renew Plans')}}</p>
+                </a>
+            </li>
+
+            <li class="sidebar-menu-item">
+                <a class="sidebar-menu-link {{menuActive('user.plan.subscription')}}" href="{{route('user.plan.subscription')}}">
+                    <span><i class="las la-file-invoice-dollar"></i></span>
+                    <p>{{ translate('Subscriptions Logs')}}</p>
                 </a>
             </li>
 

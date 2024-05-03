@@ -27,51 +27,6 @@
                 </a>
             </li>
 
-            <li class="sidebar-menu-title" data-text="{{ translate('Membership Management')}}">{{ translate('Membership Management')}}</li>
-            <li class="sidebar-menu-item">
-                <a class="sidebar-menu-link {{menuActive(['admin.plan.index', 'admin.plan.create', 'admin.plan.edit'])}}" href="{{route('admin.plan.index')}}">
-                    <span><i class="lab la-buffer"></i></span>
-                    <p>{{ translate('Membership Plans')}}</p>
-                </a>
-            </li>
-            <li class="sidebar-menu-item">
-                <a class="sidebar-menu-link {{menuActive('admin.user.*')}}" href="{{route('admin.user.index')}}">
-                    <span><i class="las la-users-cog"></i></span>
-                    <p>{{ translate('User Management')}}</p>
-                </a>
-            </li>
-
-            <li class="sidebar-menu-title" data-text="{{translate('Contact Management')}}">{{ translate('Contact Management')}}</li>
-            @php
-                $contactRouteNames = [
-                    'admin.contact.index',
-                    'admin.contact.create',
-                    'admin.contact.settings.index',
-                    'admin.contact.group.index',
-                ];
-                $isContactActive = request()->routeIs($contactRouteNames);
-            @endphp
-            <li class="sidebar-menu-item">
-                <a class="sidebar-menu-link {{menuActive(['admin.contact.group.index'])}}" href="{{route('admin.contact.group.index')}}">
-                    <span><i class="las la-users"></i></span>
-                    <p>{{ translate('Group')}}</p>
-                </a>
-            </li>
-
-            <li class="sidebar-menu-item">
-                <a class="sidebar-menu-link {{menuActive(['admin.contact.index', 'admin.contact.create'])}}" href="{{route('admin.contact.index')}}">
-                    <span><i class="las la-address-book"></i></span>
-                    <p>{{ translate('Contact Details')}}</p>
-                </a>
-            </li>
-
-            <li class="sidebar-menu-item">
-                <a class="sidebar-menu-link {{menuActive(['admin.contact.settings.index'])}}" href="{{route('admin.contact.settings.index')}}">
-                    <span><i class="las la-tag"></i></span>
-                    <p>{{ translate('Contact Attribute')}}</p>
-                </a>
-            </li>
-
             <li class="sidebar-menu-title" data-text="{{ translate('Communications Hub')}}">{{ translate('Communications Hub')}}</li>
             
             @php
@@ -240,6 +195,37 @@
                 </a>
             </li>
 
+            <li class="sidebar-menu-title" data-text="{{translate('Contact Management')}}">{{ translate('Contact Management')}}</li>
+            @php
+                $contactRouteNames = [
+                    'admin.contact.index',
+                    'admin.contact.create',
+                    'admin.contact.settings.index',
+                    'admin.contact.group.index',
+                ];
+                $isContactActive = request()->routeIs($contactRouteNames);
+            @endphp
+            <li class="sidebar-menu-item">
+                <a class="sidebar-menu-link {{menuActive(['admin.contact.group.index'])}}" href="{{route('admin.contact.group.index')}}">
+                    <span><i class="las la-users"></i></span>
+                    <p>{{ translate('Group')}}</p>
+                </a>
+            </li>
+
+            <li class="sidebar-menu-item">
+                <a class="sidebar-menu-link {{menuActive(['admin.contact.index', 'admin.contact.create'])}}" href="{{route('admin.contact.index')}}">
+                    <span><i class="las la-address-book"></i></span>
+                    <p>{{ translate('Contact Details')}}</p>
+                </a>
+            </li>
+
+            <li class="sidebar-menu-item">
+                <a class="sidebar-menu-link {{menuActive(['admin.contact.settings.index'])}}" href="{{route('admin.contact.settings.index')}}">
+                    <span><i class="las la-tag"></i></span>
+                    <p>{{ translate('Contact Attribute')}}</p>
+                </a>
+            </li>
+
             <li class="sidebar-menu-title" data-text="{{translate('Message Templates')}}">{{ translate('Message Templates')}}</li>
             @php
                 $isTemplatesActive = request()->routeIs('admin.template.email.list.user', 'admin.template.email.list.own', 'admin.template.email.list.default', 'admin.template.email.list.global', 'admin.template.user', 'admin.template.own', 'admin.template.email.create', 'admin.template.email.edit', 'admin.mail.templates.edit');
@@ -287,6 +273,20 @@
                 <a class="sidebar-menu-link {{menuActive(['admin.mail.list', 'admin.mail.edit'])}}" href="{{route('admin.mail.list')}}">
                     <span><i class="fa-solid fa-square-envelope"></i></span>
                     <p>{{ translate('Email')}}</p>
+                </a>
+            </li>
+
+            <li class="sidebar-menu-title" data-text="{{ translate('Membership Management')}}">{{ translate('Membership Management')}}</li>
+            <li class="sidebar-menu-item">
+                <a class="sidebar-menu-link {{menuActive(['admin.plan.index', 'admin.plan.create', 'admin.plan.edit'])}}" href="{{route('admin.plan.index')}}">
+                    <span><i class="lab la-buffer"></i></span>
+                    <p>{{ translate('Membership Plans')}}</p>
+                </a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a class="sidebar-menu-link {{menuActive('admin.user.*')}}" href="{{route('admin.user.index')}}">
+                    <span><i class="las la-users-cog"></i></span>
+                    <p>{{ translate('User Management')}}</p>
                 </a>
             </li>
 
