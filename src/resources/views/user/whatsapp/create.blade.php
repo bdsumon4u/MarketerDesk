@@ -217,6 +217,12 @@
 
                                 <div class="col-md-6 schedule"></div>
                             </div>
+                            
+                            <div class="form-group">
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+                                </div>
+                            </div>
                         </div>
 
                         <div>
@@ -225,11 +231,6 @@
                             </button>
                         </div>
 
-                        <div class="form-group">
-                            <div class="progress">
-                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
-                            </div>
-                        </div>
                     </div>
 
                     <div class="order-1 note-container col-xl-3 order-xl-2 d-xl-block d-none">
@@ -307,10 +308,12 @@
                 var percentage = percentComplete;
                 $('.progress .progress-bar').css("width", percentage+'%', function() {
                     return $(this).attr("aria-valuenow", percentage) + "%";
-                })
+                });
+                $('.progress .progress-bar').text(percentage+'%');
             },
             complete: function (xhr) {
                 console.log('File has uploaded');
+                window.location = '{{ route("user.whatsapp.index") }}';
             }
         });
 
