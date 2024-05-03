@@ -441,7 +441,7 @@
         }
 
         var formData = new FormData();
-        formData.append($("#add_media").attr('name'), file);
+        formData.append($("#uploadfile input").attr("name"), file);
 
         // upload file
         $.ajax({
