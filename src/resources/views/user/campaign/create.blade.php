@@ -385,6 +385,12 @@
                                 </div>
                             </div>
                             @endif
+                            
+                            <div class="form-group">
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="form-wrapper">
@@ -410,12 +416,6 @@
                                         <option  {{old('repeat_format') == 'month' ? 'selected' :""}}    value="month">{{ translate('Month') }}</option>
                                         <option  {{old('repeat_format') == 'year' ? 'selected' :""}}   value="year">{{ translate('Year') }}</option>
                                     </select>
-                                </div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <div class="progress">
-                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
                                 </div>
                             </div>
                         </div>
