@@ -35,21 +35,43 @@
 @endpush()
 <section>
     <div class="col">
-        <div class="row align-items-center gy-3 mb-3">
+        <div class="mb-3 row align-items-center gy-3">
             <div class="col">
                 <div class="tab">
-                    <button class="tablinks" onclick="openWpTab(event, 'wp-cloud-api')">{{translate("Cloud API")}}</button>
                     <button class="tablinks" onclick="openWpTab(event, 'wp-node-server')">{{translate("Node Server")}}</button>
+                    <button class="tablinks" onclick="openWpTab(event, 'wp-cloud-api')">{{translate("Cloud API")}}</button>
                 </div>
             </div>
         </div>
 
+        <div id="wp-node-server" class="tab-content">
+            <div class="form-item">
+                <div class="card">
+                    <div class="card-header">
+                       <span>{{ translate('Node Server Offline')}} <i class="fas fa-info-circle"></i></span>
+
+                        <div class="header-with-btn">
+                            <span class="gap-2 d-flex align-items-center"> 
+                                <a href="" class="badge badge--primary"> <i class="fas fa-refresh"></i>  {{ translate('Try Again') }}</a>
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <div class="card-body">
+                        <h6 class="text--danger">{{ translate('Unable to connect to WhatsApp node server. Please configure the server settings and try again.') }}</h6>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
         <div id="wp-cloud-api" class="tab-content">
             <div class="form-item">
                 <div>
                     <form action="{{route('user.gateway.whatsapp.store', 'webhook')}}" method="POST">
                         @csrf
-                        <div class="card mb-3">
+                        <div class="mb-3 card">
                             <div class="card-header">
                                 <h4 class="card-title">
                                     {{translate('Webhook Setup')}}
@@ -57,24 +79,24 @@
                             </div>
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-md-6 mb-4">
+                                    <div class="mb-4 col-md-6">
                                         <label for="verify_token">{{ translate('Add A Verify Token For Webhook')}} <span class="text-danger">*</span></label>
-                                        <div class="input-group mt-2">
+                                        <div class="mt-2 input-group">
                                             <input title="Make sure to copy this same verify token in your Business Account 'Webhook Configuration'" type="text" class="form-control" name="verify_token" id="verify_token" value="{{ $user->webhook_token }}" placeholder="{{ translate('Enter A Token For Webhook')}}">
-                                            <span class="input-group-text generate-token cursor-pointer">
+                                            <span class="cursor-pointer input-group-text generate-token">
                                                 <i class="bi bi-arrow-repeat fs-4 text--success"></i>
                                             </span>
-                                            <span class="input-group-text copy-text cursor-pointer">
+                                            <span class="cursor-pointer input-group-text copy-text">
                                                 <i class="fa-regular fa-copy fs-4 text--success"></i>
                                             </span>
                                         </div>
                                     </div>
         
-                                    <div class="col-md-6 mb-4">
+                                    <div class="mb-4 col-md-6">
                                         <label for="callback_url">{{ translate('Add A CallBack URL For Webhook')}} <span class="text-danger">*</span></label>
-                                        <div class="input-group mt-2">
+                                        <div class="mt-2 input-group">
                                             <input readonly title="Make sure to copy this same call back url in your Business Account 'Webhook Configuration'" type="text" class="form-control" name="callback_url" id="callback_url" value="{{route('webhook')."?uid=$user->uid"}}">
-                                            <span class="input-group-text copy-text cursor-pointer">
+                                            <span class="cursor-pointer input-group-text copy-text">
                                                 <i class="fa-regular fa-copy fs-4 text--success"></i>
                                             </span>
                                         </div>
@@ -93,7 +115,7 @@
 
                         <input type="text" name="whatsapp_business_api" value="true" hidden>
 
-                        <div class="card mb-3">
+                        <div class="mb-3 card">
                             <div class="card-header">
                                 <h4 class="card-title">
                                     {{translate('Whatsapp Cloud API Setup')}}
@@ -101,7 +123,7 @@
                             </div>
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-12 mb-4">
+                                    <div class="mb-4 col-12">
                                         <label for="name">{{ translate('Business Portfolio Name')}} <span class="text-danger">*</span></label>
                                         <input type="text" class="mt-2 form-control @error('name') is-invalid @enderror" name="name" id="name" value="{{old('name')}}" placeholder="{{ translate('Add a name for your Business Portfolio')}}">
                                         @error('name')
@@ -128,7 +150,7 @@
                             </h4>
 
                         </div>
-                        <div class="card-body px-0">
+                        <div class="px-0 card-body">
                             <div class="responsive-table">
                                 <table>
                                     <thead>
@@ -144,10 +166,10 @@
                                                 
                                                 <td data-label="{{translate('Session Name')}}">{{$item->name}}</td>
                                                 <td data-label="{{translate('Templates')}}">
-                                                    <a href="{{route('user.gateway.whatsapp.cloud.template', ['type' => 'whatsapp', 'id' => $item->id])}}" class="badge badge--primary p-2"> {{ translate('view templates ')}} ({{count($item->template)}})</a>
+                                                    <a href="{{route('user.gateway.whatsapp.cloud.template', ['type' => 'whatsapp', 'id' => $item->id])}}" class="p-2 badge badge--primary"> {{ translate('view templates ')}} ({{count($item->template)}})</a>
                                                 </td>
                                                 <td data-label="{{translate('Action')}}">
-                                                    <div class="d-flex align-items-center justify-content-md-start justify-content-end gap-3">
+                                                    <div class="gap-3 d-flex align-items-center justify-content-md-start justify-content-end">
                                                         <a title="Edit" href="javascript:void(0)" class="i-btn primary--btn btn--sm whatsappBusinessApiEdit"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#whatsappBusinessApiEdit"
@@ -164,7 +186,7 @@
                                     @empty
                                         <tbody>
                                             <tr>
-                                                <td colspan="5" class="text-center py-4"><span class="text-danger fw-medium">{{ translate('No data Available')}}</span></td>
+                                                <td colspan="5" class="py-4 text-center"><span class="text-danger fw-medium">{{ translate('No data Available')}}</span></td>
                                             </tr>
                                         </tbody>
                                     @endforelse
@@ -178,28 +200,6 @@
                 </div>
             </div>
         </div>
-
-        <div id="wp-node-server" class="tab-content">
-            <div class="form-item">
-                <div class="card">
-                    <div class="card-header">
-                       <span>{{ translate('Node Server Offline')}} <i class="fas fa-info-circle"></i></span>
-
-                        <div class="header-with-btn">
-                            <span class="d-flex align-items-center gap-2"> 
-                                <a href="" class="badge badge--primary"> <i class="fas fa-refresh"></i>  {{ translate('Try Again') }}</a>
-                            </span>
-                        </div>
-
-                    </div>
-
-                    <div class="card-body">
-                        <h6 class="text--danger">{{ translate('Unable to connect to WhatsApp node server. Please configure the server settings and try again.') }}</h6>
-                    </div>
-                </div>
-                
-            </div>
-        </div> 
     </div>
 </section>
 @endsection
@@ -215,12 +215,12 @@
                     <div class="modal_icon2">
                         <i class="las la-trash"></i>
                     </div>
-                    <div class="modal_text2 mt-3">
+                    <div class="mt-3 modal_text2">
                         <h6>{{ translate('Are you sure to delete')}}</h6>
                     </div>
                 </div>
                 <div class="modal_button2 modal-footer">
-                    <div class="d-flex align-items-center justify-content-center gap-3">
+                    <div class="gap-3 d-flex align-items-center justify-content-center">
                         <button type="button" class="i-btn primary--btn btn--md" data-bs-dismiss="modal">{{ translate('Cancel')}}</button>
                         <button type="submit" class="i-btn danger--btn btn--md">{{ translate('Delete')}}</button>
                     </div>
@@ -253,7 +253,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <div class="d-flex align-items-center gap-3">
+                    <div class="gap-3 d-flex align-items-center">
                         <button type="button" class="i-btn danger--btn btn--md" data-bs-dismiss="modal">{{ translate('Cancel')}}</button>
                         <button type="submit" class="i-btn primary--btn btn--md">{{ translate('Submit')}}</button>
                     </div>

@@ -34,104 +34,13 @@
 </style>
 @endpush()
 <section>
-    <div class="container-fluid p-0">
+    <div class="p-0 container-fluid">
         <div class="row gy-4">
 
             <div class="col">
                 <div class="tab">
-                    <button class="tablinks" onclick="openWpTab(event, 'wp-cloud-api')">{{ translate("Cloud API") }}</button>
                     <button class="tablinks" onclick="openWpTab(event, 'wp-node-server')">{{ translate("Node Server") }}</button>
-                </div>
-
-                <div id="wp-cloud-api" class="tab-content">
-                    <div class="form-item">
-                        <div>
-                            <form action="{{route('admin.gateway.whatsapp.store')}}" method="POST" enctype="multipart/form-data">
-                                @csrf
-
-                                <input type="text" name="whatsapp_business_api" value="true" hidden>
-
-                                <div class="card mb-3">
-                                    <div class="card-header">
-                                        <h6>{{ translate('WhatsApp Cloud API')}}</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-12 mb-4">
-                                                <label for="name">{{ translate('Business Portfolio Name')}} <span class="text-danger">*</span></label>
-                                                <input type="text" class="mt-2 form-control @error('name') is-invalid @enderror" name="name" id="name" value="{{old('name')}}" placeholder="{{ translate('Add a name for your Business Portfolio')}}" autocomplete="true">
-                                                @error('name')
-                                                    <span class="text-danger">{{$message}}</span>
-                                                @enderror
-                                            </div>
-                                            @foreach($credentials["required"] as $creds_key => $creds_value)
-                                                <div class="{{ $loop->last ? 'col-12' : 'col-md-6' }} mb-4">
-                                                    <label for="{{ $creds_key }}">{{translate(textFormat(['_'], $creds_key))}} <span class="text-danger">*</span></label>
-                                                    <input type="text" id="{{ $creds_key }}" class="mt-2 form-control" name="credentials[{{$creds_key}}]" value="{{old($creds_key)}}" placeholder="Enter the {{translate(textFormat(['_'], $creds_key))}}">
-                                                </div>
-                                            @endforeach
-                                           <sup class="mb-3">{{ translate("Now to set up your webhook please click here to collect credentials: ")}}<a class="fw-bold text-dark text-decoration-underline " target="_blank" href="{{ route('admin.general.setting.webhook.config') }}">{{ translate("Webhook Configuration") }} <i class="fa-solid fa-arrow-up-right-from-square"></i></a></sup>
-                                        </div>
-                                        <button type="submit" class="i-btn primary--btn btn--md">{{ translate('Submit')}}</button>
-                                    </div>
-                                </div>
-                            </form>
-                            <div class="card">
-                                <div class="card-header">
-                                    <h6 class="card-title">
-                                        {{translate('WhatsApp Business Account List')}}
-                                    </h6>
-
-                                </div>
-                                <div class="card-body px-0">
-                                    <div class="responsive-table">
-                                        <table>
-                                            <thead>
-                                            <tr>
-                                                <th>{{ translate('Session Name')}}</th>
-                                                <th>{{ translate('Templates')}}</th>
-                                                <th>{{ translate('Action')}}</th>
-                                            </tr>
-                                            </thead>
-                                            @forelse ($whatsappBusinesses as $item)
-                                                <tbody>
-                                                    <tr>
-                                                        
-                                                        <td data-label="{{translate('Session Name')}}">{{$item->name}}</td>
-                                                        <td data-label="{{translate('Templates')}}">
-                                                            <a href="{{route('admin.template.index', ['type' => 'whatsapp', 'id' => $item->id])}}" class="badge badge--primary p-2"> {{ translate('view templates ')}} ({{count($item->template)}})</a>
-                                                        </td>
-                                                        <td data-label="{{translate('Action')}}">
-                                                            <div class="d-flex align-items-center justify-content-md-start justify-content-end gap-3">
-                                                                <a title="Edit" href="javascript:void(0)" class="i-btn primary--btn btn--sm whatsappBusinessApiEdit"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#whatsappBusinessApiEdit"
-                                                                data-id="{{$item->id}}"
-                                                                data-name="{{$item->name}}"
-                                                                data-credentials="{{json_encode($item->credentials)}}"><i class="las la-pen"></i>{{translate('Edit')}}</a>
-
-                                                                <a title="Sync Templates" href="" class="i-btn success--btn btn--sm sync" value="{{$item->id}}"><i class="fa-solid fa-rotate"></i>{{translate('Sync Templates')}}</a>
-                                                                <a title="Delete" href="" class="i-btn danger--btn btn--sm whatsappDelete" value="{{$item->id}}"><i class="fas fa-trash-alt"></i>{{translate('Trash')}}</a>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            @empty
-                                                <tbody>
-                                                    <tr>
-                                                        <td colspan="5" class="text-center py-4"><span class="text-danger fw-medium">{{ translate('No data Available')}}</span></td>
-                                                    </tr>
-                                                </tbody>
-                                            @endforelse
-                                        </table>
-                                    </div>
-                                    <div class="m-3">
-                                        {{$whatsappBusinesses->appends(request()->all())->onEachSide(1)->links()}}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <button class="tablinks" onclick="openWpTab(event, 'wp-cloud-api')">{{ translate("Cloud API") }}</button>
                 </div>
 
                 <div id="wp-node-server" class="tab-content">
@@ -141,26 +50,26 @@
                                 <form action="{{route('admin.gateway.whatsapp.store')}}" method="POST" enctype="multipart/form-data">
                                     @csrf
                                     <input type="text" name="whatsapp_node_module" value="true" hidden>
-                                    <div class="card mb-3">
+                                    <div class="mb-3 card">
                                         <div class="card-header">
                                             <h6>{{ translate('WhatsApp Node Server')}}</h6>
                                         </div>
                                         <div class="card-body">
                                             <div class="row">
-                                                <div class="col-md-12 mb-4">
+                                                <div class="mb-4 col-md-12">
                                                     <label for="name">{{ translate('Session/Device Name')}} <span  class="text-danger">*</span>  </label>
                                                     <input type="text" class="mt-2 form-control @error('name') is-invalid @enderror " name="name" id="name" value="{{old('name')}}" placeholder="{{ translate('Put Session Name (Any)')}}" autocomplete="true">
                                                     @error('name')
                                                         <span class="text-danger">{{$message}}</span>
                                                     @enderror
                                                 </div>
-                                                <div class="col-md-6 mb-4">
+                                                <div class="mb-4 col-md-6">
                                                     <label for="min_delay">{{ translate('Message Minimum Delay Time')}}
                                                         <span class="text-danger" >*</span>
                                                     </label>
                                                     <input type="number" class="mt-2 form-control" name="min_delay" id="min_delay" value="{{old('min_delay')}}" placeholder="{{ translate('Message minimum delay time in seconds')}}">
                                                 </div>
-                                                <div class="col-md-6 mb-4">
+                                                <div class="mb-4 col-md-6">
                                                     <label for="max_delay">{{ translate('Message Maximum Delay Time')}}
                                                         <span class="text-danger" >*</span>
                                                     </label>
@@ -175,11 +84,11 @@
                                 <div class="card">
                                     <div class="card-header">
                                             <h6>{{translate('WhatsApp Linked Device List')}}</h6>
-                                        <div class="d-flex align-items-center flex-wrap gap-3">
+                                        <div class="flex-wrap gap-3 d-flex align-items-center">
                                             <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#whatsappServerSetting" class="badge badge--info"><i class="fas fa-gear"></i> {{translate('Server Settings')}}</a>
                                         </div>
                                     </div>
-                                    <div class="card-body px-0">
+                                    <div class="px-0 card-body">
                                         <div class="responsive-table">
                                             <table>
                                                 <thead>
@@ -201,7 +110,7 @@
                                                         <td data-label="{{translate('Time Delay')}}" >{{array_key_exists("min_delay", $item->credentials) ? convertTime($item->credentials["min_delay"]) : "N/A"}}</td>
                                                         <td data-label="{{translate('Time Delay')}}" >{{array_key_exists("max_delay", $item->credentials) ? convertTime($item->credentials["max_delay"]) : "N/A"}}</td>
                                                         <td data-label="{{translate('Status')}}" >
-                                                            <div class="d-flex align-items-center justify-content-md-start justify-content-end gap-3">
+                                                            <div class="gap-3 d-flex align-items-center justify-content-md-start justify-content-end">
                                                                 <span class="badge badge--{{$item->status == 'initiate' ? 'primary' : ($item->status == 'connected' ? 'success' : 'danger')}}">
                                                                     {{ucwords($item->status)}}
                                                                 </span>
@@ -209,7 +118,7 @@
 
                                                         </td>
                                                         <td>
-                                                            <div class="d-flex align-items-center justify-content-md-start justify-content-end gap-3">
+                                                            <div class="gap-3 d-flex align-items-center justify-content-md-start justify-content-end">
 
                                                                 <a title="Edit" href="javascript:void(0)" class="i-btn primary--btn btn--sm whatsappEdit"
                                                                 data-bs-toggle="modal"
@@ -281,7 +190,7 @@
                                    <span>{{ translate('Node Server Offline')}} <i class="fas fa-info-circle"></i></span>
 
                                     <div class="header-with-btn">
-                                        <span class="d-flex align-items-center gap-2"> 
+                                        <span class="gap-2 d-flex align-items-center"> 
                                             <a href="" class="badge badge--primary"> <i class="fas fa-refresh"></i>  {{ translate('Try Again') }}</a>
                                             <a href="https://support.igensolutionsltd.com/help-center/categories/2/xsender" target="_blank" class="badge badge--success">  <i class="fas fa-gear"></i> {{ translate('Setup Guide') }}</a>
                                             <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#whatsappServerSetting" class="badge badge--info"><i class="las la-key"></i> {{translate('Node Settings')}}</a>
@@ -296,7 +205,98 @@
                             </div>
                         @endif
                     </div>
-                </div> 
+                </div>
+
+                <div id="wp-cloud-api" class="tab-content">
+                    <div class="form-item">
+                        <div>
+                            <form action="{{route('admin.gateway.whatsapp.store')}}" method="POST" enctype="multipart/form-data">
+                                @csrf
+
+                                <input type="text" name="whatsapp_business_api" value="true" hidden>
+
+                                <div class="mb-3 card">
+                                    <div class="card-header">
+                                        <h6>{{ translate('WhatsApp Cloud API')}}</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="mb-4 col-12">
+                                                <label for="name">{{ translate('Business Portfolio Name')}} <span class="text-danger">*</span></label>
+                                                <input type="text" class="mt-2 form-control @error('name') is-invalid @enderror" name="name" id="name" value="{{old('name')}}" placeholder="{{ translate('Add a name for your Business Portfolio')}}" autocomplete="true">
+                                                @error('name')
+                                                    <span class="text-danger">{{$message}}</span>
+                                                @enderror
+                                            </div>
+                                            @foreach($credentials["required"] as $creds_key => $creds_value)
+                                                <div class="{{ $loop->last ? 'col-12' : 'col-md-6' }} mb-4">
+                                                    <label for="{{ $creds_key }}">{{translate(textFormat(['_'], $creds_key))}} <span class="text-danger">*</span></label>
+                                                    <input type="text" id="{{ $creds_key }}" class="mt-2 form-control" name="credentials[{{$creds_key}}]" value="{{old($creds_key)}}" placeholder="Enter the {{translate(textFormat(['_'], $creds_key))}}">
+                                                </div>
+                                            @endforeach
+                                           <sup class="mb-3">{{ translate("Now to set up your webhook please click here to collect credentials: ")}}<a class="fw-bold text-dark text-decoration-underline " target="_blank" href="{{ route('admin.general.setting.webhook.config') }}">{{ translate("Webhook Configuration") }} <i class="fa-solid fa-arrow-up-right-from-square"></i></a></sup>
+                                        </div>
+                                        <button type="submit" class="i-btn primary--btn btn--md">{{ translate('Submit')}}</button>
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6 class="card-title">
+                                        {{translate('WhatsApp Business Account List')}}
+                                    </h6>
+
+                                </div>
+                                <div class="px-0 card-body">
+                                    <div class="responsive-table">
+                                        <table>
+                                            <thead>
+                                            <tr>
+                                                <th>{{ translate('Session Name')}}</th>
+                                                <th>{{ translate('Templates')}}</th>
+                                                <th>{{ translate('Action')}}</th>
+                                            </tr>
+                                            </thead>
+                                            @forelse ($whatsappBusinesses as $item)
+                                                <tbody>
+                                                    <tr>
+                                                        
+                                                        <td data-label="{{translate('Session Name')}}">{{$item->name}}</td>
+                                                        <td data-label="{{translate('Templates')}}">
+                                                            <a href="{{route('admin.template.index', ['type' => 'whatsapp', 'id' => $item->id])}}" class="p-2 badge badge--primary"> {{ translate('view templates ')}} ({{count($item->template)}})</a>
+                                                        </td>
+                                                        <td data-label="{{translate('Action')}}">
+                                                            <div class="gap-3 d-flex align-items-center justify-content-md-start justify-content-end">
+                                                                <a title="Edit" href="javascript:void(0)" class="i-btn primary--btn btn--sm whatsappBusinessApiEdit"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#whatsappBusinessApiEdit"
+                                                                data-id="{{$item->id}}"
+                                                                data-name="{{$item->name}}"
+                                                                data-credentials="{{json_encode($item->credentials)}}"><i class="las la-pen"></i>{{translate('Edit')}}</a>
+
+                                                                <a title="Sync Templates" href="" class="i-btn success--btn btn--sm sync" value="{{$item->id}}"><i class="fa-solid fa-rotate"></i>{{translate('Sync Templates')}}</a>
+                                                                <a title="Delete" href="" class="i-btn danger--btn btn--sm whatsappDelete" value="{{$item->id}}"><i class="fas fa-trash-alt"></i>{{translate('Trash')}}</a>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            @empty
+                                                <tbody>
+                                                    <tr>
+                                                        <td colspan="5" class="py-4 text-center"><span class="text-danger fw-medium">{{ translate('No data Available')}}</span></td>
+                                                    </tr>
+                                                </tbody>
+                                            @endforelse
+                                        </table>
+                                    </div>
+                                    <div class="m-3">
+                                        {{$whatsappBusinesses->appends(request()->all())->onEachSide(1)->links()}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -312,12 +312,12 @@
                     <div class="modal_icon2">
                         <i class="las la-trash"></i>
                     </div>
-                    <div class="modal_text2 mt-3">
+                    <div class="mt-3 modal_text2">
                         <h6>{{ translate('Are you sure to delete')}}</h6>
                     </div>
                 </div>
                 <div class="modal_button2 modal-footer">
-                    <div class="d-flex align-items-center justify-content-center gap-3">
+                    <div class="gap-3 d-flex align-items-center justify-content-center">
                         <button type="button" class="i-btn primary--btn btn--md" data-bs-dismiss="modal">{{ translate('Cancel')}}</button>
                         <button type="submit" class="i-btn danger--btn btn--md">{{ translate('Delete')}}</button>
                     </div>
@@ -356,7 +356,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <div class="d-flex align-items-center gap-3">
+                    <div class="gap-3 d-flex align-items-center">
                         <button type="button" class="i-btn danger--btn btn--md" data-bs-dismiss="modal">{{ translate('Cancel')}}</button>
                         <button type="submit" class="i-btn primary--btn btn--md">{{ translate('Submit')}}</button>
                     </div>
@@ -398,7 +398,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <div class="d-flex align-items-center gap-3">
+                    <div class="gap-3 d-flex align-items-center">
                         <button type="button" class="i-btn danger--btn btn--md" data-bs-dismiss="modal">{{ translate('Cancel')}}</button>
                         <button type="submit" class="i-btn primary--btn btn--md">{{ translate('Submit')}}</button>
                     </div>
@@ -421,23 +421,23 @@
                         </div>
                         <div class="card-body">
                             <div class="row">
-                            <div class="col-lg-12 mb-3">
+                            <div class="mb-3 col-lg-12">
                                 <label for="server_url" class="form-label">{{translate('WhatsApp Server URL')}}</label>
                                 <input type="text" class="form-control" id="server_url" placeholder="{{ translate('Enter Whatsapp Server URL')}}" value="{{ env('WP_SERVER_URL') }}" readonly="true">
                             </div>
-                            <div class="col-lg-6 mb-3">
+                            <div class="mb-3 col-lg-6">
                                 <label for="server_host" class="form-label">{{translate('WhatsApp Server Host')}} <sup class="text--danger">*</sup></label>
                                 <input type="text" class="form-control" id="server_host" name="server_host" placeholder="{{ translate('Enter Whatsapp Server Host')}}" value="{{ env('NODE_SERVER_HOST') }}" required>
                             </div>
-                            <div class="col-lg-6 mb-3">
+                            <div class="mb-3 col-lg-6">
                                 <label for="server_port" class="form-label">{{translate('WhatsApp Server Port')}} <sup class="text--danger">*</sup></label>
                                 <input type="number" class="form-control" id="server_port" name="server_port" placeholder="{{ translate('Enter Whatsapp Server Port')}}" value="{{ env('NODE_SERVER_PORT') }}" required>
                             </div>
-                            <div class="col-lg-6 mb-3">
+                            <div class="mb-3 col-lg-6">
                                 <label for="max_retries" class="form-label">{{translate('Maximum Retries')}} <sup class="text--danger">*</sup></label>
                                 <input type="number" class="form-control" id="max_retries" name="max_retries" placeholder="{{ translate('Enter The Maximum Amount of Retries')}}" value="{{ env('MAX_RETRIES') }}" required>
                             </div>
-                            <div class="col-lg-6 mb-3">
+                            <div class="mb-3 col-lg-6">
                                 <label for="reconnect_interval" class="form-label">{{ translate('Reconnect Interval')}} <sup class="text--danger">*</sup></label>
                                 <input type="number" class="form-control" id="reconnect_interval" name="reconnect_interval" placeholder="{{ translate('Enter Reconnect Interval Duration')}}" value="{{ env('RECONNECT_INTERVAL') }}" required>
                             </div>
@@ -446,7 +446,7 @@
                 </div>
 
                 <div class="modal_button2 modal-footer">
-                    <div class="d-flex align-items-center justify-content-center gap-3">
+                    <div class="gap-3 d-flex align-items-center justify-content-center">
                         <button type="button" class="i-btn primary--btn btn--md" data-bs-dismiss="modal">{{ translate('Cancel')}}</button>
                         <button type="submit" class="i-btn success--btn btn--md">{{ translate('Submit')}}</button>
                     </div>
