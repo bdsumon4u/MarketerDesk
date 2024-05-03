@@ -20,7 +20,7 @@ jobs:
         run: mkdir -p ~/.ssh && touch ~/.ssh/known_hosts
 
       - name: Add SSH known hosts
-        run: ssh-keyscan -H $marketerdesk.com >> ~/.ssh/known_hosts
+        run: ssh-keyscan -H marketerdesk.com >> ~/.ssh/known_hosts
 
       - name: Store private key in a temporary file
         run: echo "${{ secrets.KEY }}" > /tmp/private_key && chmod 600 /tmp/private_key
