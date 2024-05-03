@@ -10,15 +10,15 @@
         </div>
 
         <div class="card-body position-relative">
-            <form action="{{route('user.whatsapp.store')}}" method="POST" enctype="multipart/form-data">
+            <form id="create-form" action="{{route('user.whatsapp.store')}}" method="POST" enctype="multipart/form-data">
               @csrf
               <input type="text" name="channel" value="whatsapp" hidden>
                 <div class="row g-4">
-                    <div class="col-xl-9 order-xl-1 order-2">
+                    <div class="order-2 col-xl-9 order-xl-1">
                         <div class="form-wrapper">
                             <h6 class="form-wrapper-title">{{translate('Choose audience')}}</h6>
                             <div class="file-tab">
-                                <ul class="nav nav-tabs mb-3 gap-2" id="myTabContent" role="tablist">
+                                <ul class="gap-2 mb-3 nav nav-tabs" id="myTabContent" role="tablist">
                                     <li class="nav-item single-audience" role="presentation">
                                         <button class="nav-link active" id="single-tab" data-bs-toggle="tab" data-bs-target="#single-tab-pane" type="button" role="tab" aria-controls="single-tab-pane" aria-selected="true"><i class="las la-user"></i> {{ translate('Single Audience') }}</button>
                                     </li>
@@ -60,7 +60,7 @@
                                                     </label>
                                                 </div>
 
-                                                <div class="form-item group-logic-items mt-3"></div>
+                                                <div class="mt-3 form-item group-logic-items"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -72,7 +72,7 @@
                                             <div class="upload-filed">
                                                 <input type="file" name="file" id="file" />
                                                 <label for="file">
-                                                    <div class="d-flex align-items-center gap-3">
+                                                    <div class="gap-3 d-flex align-items-center">
                                                         <span class="upload-drop-file">
                                                             <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"x="0" y="0" viewBox="0 0 128 128" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g><path fill="#f6f0ff" d="M99.091 84.317a22.6 22.6 0 1 0-4.709-44.708 31.448 31.448 0 0 0-60.764 0 22.6 22.6 0 1 0-4.71 44.708z" opacity="1" data-original="#f6f0ff" class=""></path><circle cx="64" cy="84.317" r="27.403" fill="#6009f0" opacity="1" data-original="#6009f0" class=""></circle><g fill="#f6f0ff"><path d="M59.053 80.798v12.926h9.894V80.798h7.705L64 68.146 51.348 80.798zM68.947 102.238h-9.894a1.75 1.75 0 0 1 0-3.5h9.894a1.75 1.75 0 0 1 0 3.5z" fill="#f6f0ff" opacity="1" data-original="#f6f0ff" class=""></path></g></g></svg>
                                                         </span>
@@ -81,7 +81,7 @@
                                                 </label>
                                             </div>
 
-                                            <div class="form-text mt-3">
+                                            <div class="mt-3 form-text">
                                                 {{ translate('Download Sample: ')}}
                                                 <a href="{{route('demo.file.download', ['extension' => 'csv' , 'type' => $channel])}}" class="badge badge--primary"><i class="fa fa-download" aria-hidden="true"></i> {{translate('csv')}}</a>
                                                 {{-- <a href="{{route('demo.file.download', ['extension' => 'xlsx' , 'type' => $channel])}}" class="badge badge--primary"><i class="fa fa-download" aria-hidden="true"></i> {{ translate('xlsx')}}</a> --}}
@@ -92,7 +92,7 @@
                             </div>
                         </div>
 
-                        <div class="form-wrapper select-whatsapp_device mt-3">
+                        <div class="mt-3 form-wrapper select-whatsapp_device">
                             <h6 class="form-wrapper-title">{{ translate('Select Sending method')}}</h6>
                             <div class="whatsapp_device">
                                 <div class="row">
@@ -124,7 +124,7 @@
                             </div>
                         </div>
 
-                        <div class="form-wrapper select-cloud-templates d-none mt-3">
+                        <div class="mt-3 form-wrapper select-cloud-templates d-none">
                             <h6 class="form-wrapper-title">{{ translate('Select WhatsApp Templates')}}</h6>
                             <div class="whatsapp_templates">
                                 <div class="row">
@@ -143,7 +143,7 @@
                             <input type="text" name="cloud_api_data" hidden>
 
                             <div class="file-tab whatsapp-cloud-steps d-none">
-                                <ul class="nav nav-tabs whatsapp-tabs mb-3 gap-2" id="whatsapp_fields" role="tablist"></ul>
+                                <ul class="gap-2 mb-3 nav nav-tabs whatsapp-tabs" id="whatsapp_fields" role="tablist"></ul>
                                 <div class="tab-content whatsapp-tab-content" id="whatsapp_fields"></div>
                             </div>
 
@@ -166,7 +166,7 @@
                                             </div>
                                         </div>
                                         
-                                        <div class="mt-4 d-flex align-items-center justify-content-md-between justify-content-start flex-wrap gap-3">
+                                        <div class="flex-wrap gap-3 mt-4 d-flex align-items-center justify-content-md-between justify-content-start">
                                             <div class="text-end message--word-count"></div>
                                         </div>
                                     </div>
@@ -176,7 +176,7 @@
                                     <input type="text" name="without_cloud_api" hidden>
                                     <div class="form-item">
                                         <label class="form-label" for="message">{{ translate('Write Message')}} <sup class="text-danger">*</sup></label>
-                                        <div class="my-2 d-flex flex-wrap align-items-center gap-2">
+                                        <div class="flex-wrap gap-2 my-2 d-flex align-items-center">
                                             <label for="media_upload" class="media_upload_label">
                                                 <div id="uploadfile">
                                                     <input type="file" id="media_upload" hidden>
@@ -186,10 +186,10 @@
                                                 </div>
                                             </label>
 
-                                            <a title="{{ translate("Bold") }}" href="#" class="style-link i-btn light--btn btn--sm " data-style="bold"><span class="fw-bold p-0 i-btn light--btn btn--sm me-2">{{ translate("Bold") }}</span><i class="fa-solid fa-bold"></i></a>
-                                            <a title="{{ translate("Italic") }}" href="#" class="style-link i-btn light--btn btn--sm" data-style="italic"><span class="fst-italic p-0 i-btn light--btn btn--sm me-2">{{ translate("Italic") }}</span><i class="fa-solid fa-italic"></i></a>
-                                            <a title="{{ translate("Mono Space") }}" href="#" class="style-link i-btn light--btn btn--sm" data-style="mono"><span class="font-monospace p-0 i-btn light--btn btn--sm me-2">{{ translate("Mono Space") }}</span><i class="fa-solid fa-arrows-left-right-to-line"></i></a>
-                                            <a title="{{ translate("Strike") }}" href="#" class="style-link i-btn light--btn btn--sm" data-style="strike"><span class="text-decoration-line-through p-0 i-btn light--btn btn--sm me-2">{{ translate("Strike") }}</span><i class="fa-solid fa-strikethrough"></i></a>
+                                            <a title="{{ translate("Bold") }}" href="#" class="style-link i-btn light--btn btn--sm " data-style="bold"><span class="p-0 fw-bold i-btn light--btn btn--sm me-2">{{ translate("Bold") }}</span><i class="fa-solid fa-bold"></i></a>
+                                            <a title="{{ translate("Italic") }}" href="#" class="style-link i-btn light--btn btn--sm" data-style="italic"><span class="p-0 fst-italic i-btn light--btn btn--sm me-2">{{ translate("Italic") }}</span><i class="fa-solid fa-italic"></i></a>
+                                            <a title="{{ translate("Mono Space") }}" href="#" class="style-link i-btn light--btn btn--sm" data-style="mono"><span class="p-0 font-monospace i-btn light--btn btn--sm me-2">{{ translate("Mono Space") }}</span><i class="fa-solid fa-arrows-left-right-to-line"></i></a>
+                                            <a title="{{ translate("Strike") }}" href="#" class="style-link i-btn light--btn btn--sm" data-style="strike"><span class="p-0 text-decoration-line-through i-btn light--btn btn--sm me-2">{{ translate("Strike") }}</span><i class="fa-solid fa-strikethrough"></i></a>
                                             <a href="javascript:void(0)" class="i-btn info--btn btn--sm ms-auto" data-bs-toggle="modal" data-bs-target="#templatedata">{{ translate('Use Template')}} </a>
                                         </div>
                                         <div class="custom--editor">
@@ -202,7 +202,7 @@
                                             <div id="add_media" class="test"></div>
                                         </div>
                                         
-                                        <div class="mt-4 d-flex align-items-center justify-content-md-between justify-content-start flex-wrap gap-3">
+                                        <div class="flex-wrap gap-3 mt-4 d-flex align-items-center justify-content-md-between justify-content-start">
                                             <div class="text-end message--word-count"></div>
                                         </div>
                                     </div>
@@ -224,9 +224,15 @@
                                 {{translate("Submit")}}
                             </button>
                         </div>
+
+                        <div class="form-group">
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="note-container col-xl-3 order-xl-2 order-1 d-xl-block d-none">
+                    <div class="order-1 note-container col-xl-3 order-xl-2 d-xl-block d-none">
                         <div class="position-relative h-100">
                             <div class="note">
                                 <h6>{{translate('Suggestions Note')}}</h6>
@@ -241,10 +247,10 @@
                                 </div>
                             </div>
                             <div class="whatsapp-message-preview">
-                                <div class="form-wrapper mb-0">
-                                    <h6 class="message-header mb-2"></h6>
+                                <div class="mb-0 form-wrapper">
+                                    <h6 class="mb-2 message-header"></h6>
                                     <div>
-                                        <p class="message-body mb-2"></p>
+                                        <p class="mb-2 message-body"></p>
                                         <p class="message-footer fw-light"></p>
                                     </div>
                                 </div>
@@ -263,7 +269,7 @@
             <div class="modal-body">
                 <div class="card">
                     <div class="card-header bg--lite--violet">
-                        <div class="card-title text-center text--light">{{ translate('SMS Template')}}</div>
+                        <div class="text-center card-title text--light">{{ translate('SMS Template')}}</div>
                     </div>
                     <div class="card-body">
                         <div class="mb-3">
@@ -284,6 +290,7 @@
 @endsection
 
 @push('script-push')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js"></script>
 <script>
 	(function($){
 		"use strict";
@@ -291,6 +298,22 @@
 			tags: true,
 			tokenSeparators: [',']
 		});
+
+        $('#create-form').ajaxForm({
+                beforeSend: function () {
+                    var percentage = '0';
+                },
+                uploadProgress: function (event, position, total, percentComplete) {
+                    var percentage = percentComplete;
+                    $('.progress .progress-bar').css("width", percentage+'%', function() {
+                        return $(this).attr("aria-valuenow", percentage) + "%";
+                    })
+                },
+                complete: function (xhr) {
+                    console.log('File has uploaded');
+                }
+            });
+        });
 
         //Contact File Input Details
         $("#file").change(function() {

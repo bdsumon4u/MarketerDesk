@@ -440,42 +440,6 @@
             displayImagePreview(file);
         }
 
-        var formData = new FormData();
-        formData.append($("#uploadfile input").attr("name"), file);
-
-        // upload file
-        $.ajax({
-          xhr: function () {
-            var xhr = new window.XMLHttpRequest();
-
-            xhr.upload.addEventListener(
-              "progress",
-              function (evt) {
-                if (evt.lengthComputable) {
-                  var percentComplete = evt.loaded / evt.total;
-                  percentComplete = parseInt(percentComplete * 100);
-                  console.log(percentComplete);
-
-                    if (percentComplete === 100) {
-                        console.log('complete');
-                  }
-                }
-              },
-              false
-            );
-
-            return xhr;
-          },
-          url: "/upload-wsa-file",
-          type: "POST",
-          data: formData,
-          contentType: "application/json",
-          dataType: "json",
-          success: function (result) {
-            console.log(result);
-          },
-        });
-
         $('.remove__file').click(function (e) {
 
             e.preventDefault();
