@@ -159,7 +159,7 @@ class ManageWhatsappController extends Controller {
             return back()->withNotify($notify);
         }
 
-        if ($request->has('file')) {
+        if ($request->file) {
 
             $extension = strtolower($request->file('file')->getClientOriginalExtension());
             if (!in_array($extension, ['csv', 'xlsx'])) {
