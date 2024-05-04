@@ -10,7 +10,7 @@
 		</div>
 
 		<div class="card-body position-relative">
-			<form action="{{route('user.campaign.update')}}" method="POST" enctype="multipart/form-data">
+			<form id="create-form" action="{{route('user.campaign.update')}}" method="POST" enctype="multipart/form-data">
 			   @csrf
 			   <div class="row g-4">
 					 <div class="order-2 col-xl-9 order-xl-1">
@@ -404,6 +404,11 @@
 								</div>
 
 								@endif
+								<div class="form-group">
+									<div class="progress">
+										<div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+									</div>
+								</div>
 							</div>
 
 							<div class="form-wrapper">
@@ -529,6 +534,7 @@
 
 
 @push('script-push')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js"></script>
 <script>
 	(function($){
 		"use strict";
@@ -538,6 +544,23 @@
 			tags: true,
 			tokenSeparators: [',']
 		});
+
+        $('#create-form').ajaxForm({
+            beforeSend: function () {
+                var percentage = '0';
+            },
+            uploadProgress: function (event, position, total, percentComplete) {
+                var percentage = percentComplete;
+                $('.progress .progress-bar').css("width", percentage+'%', function() {
+                    return $(this).attr("aria-valuenow", percentage) + "%";
+                });
+                $('.progress .progress-bar').text(percentage+'%');
+            },
+            complete: function (xhr) {
+                console.log('File has uploaded');
+                window.location = '{{ route('user.campaign.whatsapp') }}';
+            }
+        });
 
 		$(document).on('click','#use-template',function(e){
 			var html  = $(this).attr('data-html')
