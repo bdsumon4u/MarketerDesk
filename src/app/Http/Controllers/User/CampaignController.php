@@ -473,12 +473,6 @@ class CampaignController extends Controller
             $defaultGateway = Gateway::whereNotNull('mail_gateways')->where("user_id", auth()->user()->id)->where('is_default', 1)->first();
         }
 
-        if (count($contactsData['contacts']) == 0) {
-
-            $notify[] = ['error', translate("A campaign cannot be updated without contacts.")];
-            return back()->withNotify($notify);
-        }
-
         if($request->input('gateway_type')) {
 
             $gatewayMethod = Gateway::where('id', $request->input('gateway_id'))->firstOrFail();
@@ -513,8 +507,11 @@ class CampaignController extends Controller
             CampaignSchedule::where('campaign_id',$campaign->id)->delete();
             $this->campaignService->saveSchedule($request, $campaign->id);
         }
-        CampaignContact::where('campaign_id',$campaign->id)->delete();
-        $this->campaignService->saveContacts($contactsData, $campaign);
+
+        if (count($contactsData['contacts']) != 0) {
+            CampaignContact::where('campaign_id', $campaign->id)->delete();
+            $this->campaignService->saveContacts($contactsData, $campaign);
+        }
         $notify[]     = ['success', translate('Campaign Updated Successfully')];
         return back()->withNotify($notify);
         
