@@ -530,6 +530,7 @@
         $('#create-form').ajaxForm({
             beforeSend: function () {
                 var percentage = '0';
+                $('[type="submit"]').attr('disabled', true);
             },
             uploadProgress: function (event, position, total, percentComplete) {
                 var percentage = percentComplete;
@@ -541,6 +542,10 @@
             complete: function (xhr) {
                 console.log('File has uploaded');
                 window.location = '{{ route('user.campaign.whatsapp') }}';
+            },
+            error: function (xhr) {
+                console.log(xhr);
+                $('[type="submit"]').attr('disabled', false);
             }
         });
 
