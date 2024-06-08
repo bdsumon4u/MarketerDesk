@@ -541,7 +541,7 @@
             },
             complete: function (xhr) {
                 console.log('File has uploaded');
-                window.location = '{{ route('user.campaign.index') }}';
+                window.location = '{{ route('user.campaign.whatsapp') }}';
             },
             error: function (xhr) {
                 console.log(xhr);
