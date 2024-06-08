@@ -60,13 +60,14 @@
             return uuid;
         }
 
-        $( '#keygen' ).on('click',function(){
+        $( '#keygen' ).on('click',function() {
+
             var api_key_value = generateUUID();
-            $( '#apikey' ).val(api_key_value);
+            $('#apikey').val(api_key_value);
 
             $.ajax({
-                type:"POST",
-                url:"{{route('admin.save.generate.api.key')}}",
+                type : "POST",
+                url  : "{{route('admin.save.generate.api.key')}}",
                 data : {_token : "{{ csrf_token() }}", api_key : api_key_value},
                 success:function(response){
                     if(response.error){

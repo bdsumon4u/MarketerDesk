@@ -64,9 +64,9 @@ class SmsController extends Controller
 
         $smslogs = $this->smsService->searchSmsLog($search, $searchDate);
         $smslogs = $smslogs->paginate(paginateNumber());
-        $title   = 'Email History Search - ' . $search . ' '.$searchDate.' '.$status;
-
-        return view('admin.sms.index', compact('title', 'smslogs', 'search', 'searchDate', 'status'));
+        $title   = 'SMS History Search - ' . $search . ' '.$searchDate.' '.$status;
+        $android_gateways = AndroidApi::where("status", AndroidApi::ACTIVE)->latest()->get();
+        return view('admin.sms.index', compact('title', 'smslogs', 'search', 'searchDate', 'status', 'android_gateways'));
     }
 
     /**
@@ -78,12 +78,12 @@ class SmsController extends Controller
     public function smsStatusUpdate(Request $request) {
         
         $request->validate([
-            'id'     => 'nullable|exists:s_m_slogs,id',
-            'status' => 'required|in:1,3,4',
+            'smslogid' => 'nullable|exists:s_m_slogs,id',
+            'status'   => 'required|in:1,3,4',
         ]);
         
         $general   = GeneralSetting::first();
-        $smsLogIds = $request->input('smslogid') !== null ? array_filter(explode(",",$request->input('smslogid'))) : $request->has('id');
+        $smsLogIds = $request->input('smslogid') !== null ? array_filter(explode(",",$request->input('smslogid'))) : $request->has('smslogid');
         $this->smsService->smsLogStatusUpdate((int) $request->status, (array) $smsLogIds, $general, $request->input('android_sim_update') == "true" ? $request->input('sim_id') : null);
 
         $notify[] = ['success', 'SMS status has been updated'];

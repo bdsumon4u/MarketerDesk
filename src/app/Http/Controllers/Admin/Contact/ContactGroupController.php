@@ -64,7 +64,7 @@ class ContactGroupController extends Controller
             "user_id" => null
         ];
 
-        $data = $this->contactService->groupSave(null, $data);
+        $data = $this->contactService->groupSave($data, null);
         return back()->withNotify($data);
     }
 
@@ -80,7 +80,7 @@ class ContactGroupController extends Controller
             "user_id" => null
         ];
 
-        $data = $this->contactService->groupSave($request->uid, $data);
+        $data = $this->contactService->groupSave($data, $request->uid);
         return back()->withNotify($data);
     }
 

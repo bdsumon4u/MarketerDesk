@@ -44,7 +44,7 @@ class SendMail
             }
             elseif($mailConfiguration->type == "mailjet") {
     
-                self::sendSMTPMail($userInfo->email, $emailTemplate->subject, $messages, $general, $mailConfiguration); 
+                self::sendMailJetMail($userInfo->email, $emailTemplate->subject, $messages, $general, $mailConfiguration); 
             } 
             elseif($mailConfiguration->type == "sendgrid") {
     

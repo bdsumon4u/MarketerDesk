@@ -201,7 +201,7 @@ class ContactController extends Controller
 
             $file = $request->file('file');
             $extension = $file->getClientOriginalExtension();
-            $directory = public_path("../../assets/file/contact/temporary");
+            $directory = "assets/file/contact/temporary";
            
             if (!File::isDirectory($directory)) {
                 File::makeDirectory($directory, 0755, true, true);
@@ -211,7 +211,7 @@ class ContactController extends Controller
             $filePath = $directory . '/' . $fileName;
             
             $file->move($directory, $fileName);
-            $filePath = public_path("../../assets/file/contact/temporary/{$fileName}");
+            $filePath = "assets/file/contact/temporary/{$fileName}";
             return response()->json(["status" => true, "file_name" => $fileName, "file_path" => $filePath]);
 
         } catch (\Exception $e) {
@@ -225,9 +225,9 @@ class ContactController extends Controller
     */ 
 
     public function deleteFile(Request $request) {
-
+        
         $fileName = $request->input('file_name');
-        $filePath = public_path("../../assets/file/contact/temporary/{$fileName}");
+        $filePath = "assets/file/contact/temporary/{$fileName}";
 
         try {
             if (File::exists($filePath)) {

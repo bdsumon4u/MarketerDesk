@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Validator;
 use Illuminate\Support\Facades\Response;
 use App\Models\AndroidApiSimInfo;
+use App\Models\CampaignContact;
 use App\Models\SMSlog;
 use App\Models\GeneralSetting;
 use App\Models\User;
@@ -58,6 +59,8 @@ class ManageSMSController extends Controller
         $validator = Validator::make($request->all(), [
             
             'android_gateway_sim_id' => 'required|exists:android_api_sim_infos,id',
+        ], [
+            'android_gateway_sim_id.exists' => "Selected sim for this sms is no longer available"
         ]);
 
         if ($validator->fails()) {
@@ -83,6 +86,8 @@ class ManageSMSController extends Controller
         $validator = Validator::make($request->all(), [
             'id' => 'required|exists:s_m_slogs,id',
             'status' => 'required|in:5,4,3',
+        ], [
+            'id.exists' => "SMS is not longer available"
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -91,7 +96,8 @@ class ManageSMSController extends Controller
             ],400);
         }
         $smslog = SMSlog::where('id', $request->id)->whereIn('status', [1, 5])->first();
-      
+       
+       
         if(!$smslog) {
 
             return response()->json([
@@ -101,14 +107,25 @@ class ManageSMSController extends Controller
         if($smslog) {
 
             if ($request->status == 4) {
-
+                
                 $smslog->status       = 4;
                 $smslog->delivered_at = now();
+                
                 $smslog->save();
+                if($smslog->contact_id) {
+
+                    $this->updateContact($smslog->contact_id, "Success");
+                }
+               
+                
             } elseif($request->status == 5) {
 
             	$smslog->status = 5;
                 $smslog->save();
+                if($smslog->contact_id) {
+
+                    $this->updateContact($smslog->contact_id, "Processing");
+                }
             } else {
 
                 try{
@@ -133,6 +150,11 @@ class ManageSMSController extends Controller
                         $creditInfo->details     = $totalcredit." Credit Return ".$smslog->to." is Falied";
                         $creditInfo->save();
                     }
+                    if($smslog->contact_id) {
+
+                        $this->updateContact($smslog->contact_id, "Fail");
+                        
+                    }
                    
                 } catch (\Exception $e) {
                     
@@ -148,14 +170,24 @@ class ManageSMSController extends Controller
 
     }
 
+    public function updateContact($id, $status) {
+
+        $campaign_contact = CampaignContact::where("id",$id)->first();
+        $campaign_contact->status = $status;
+        $campaign_contact->save();
+    }
 
     public function simClosed(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'id'     => 'required',
+            'id'     => 'required|exists:android_api_sim_infos,id',
             'status' => 'required|in:1,2',
+        ], [
+            'id.exists' => "Sim is no longer available"
         ]);
+      
         if ($validator->fails()) {
+         
             return response()->json([
                 'status' => false,
                 'data' => $validator->errors(),
@@ -168,10 +200,11 @@ class ManageSMSController extends Controller
                $simInfo->status = $request->status;
                $simInfo->save(); 
             }
-        }
-        return response()->json([
-            'status' => true,
-        ],200);
+            return response()->json([
+              'status' => true,
+          ],200);
+        } 
+        
     }
 
 

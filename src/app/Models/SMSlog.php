@@ -12,10 +12,10 @@ class SMSlog extends Model
 
     protected $guarded = [];
 
-	const PENDING = 1;
-	const SCHEDULE = 2;
-	const FAILED = 3;
-	const SUCCESS = 4;
+	const PENDING    = 1;
+	const SCHEDULE 	 = 2;
+	const FAILED     = 3;
+	const SUCCESS 	 = 4;
 	const PROCESSING = 5;
 
 

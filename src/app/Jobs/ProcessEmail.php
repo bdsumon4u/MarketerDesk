@@ -71,7 +71,8 @@ class ProcessEmail implements ShouldQueue
             if($this->emailLog->sender->type == 'smtp') {
                 SendEmail::sendSMTPMail($emailTo, $emailReplyTo, $subject, $messages, $this->emailLog,  $emailMethod, $emailFromName);
             }
-            elseif($this->emailLog->sender->type == "mailjet"){
+            elseif($this->emailLog->sender->type == "mailjet") {
+                
                 SendEmail::sendMailJetMail($emailFrom, $subject, $messages, $this->emailLog, $emailMethod);
             }
             elseif($this->emailLog->sender->type == "aws") {
@@ -81,7 +82,7 @@ class ProcessEmail implements ShouldQueue
                 
                 SendEmail::sendMailGunMail($emailFrom, $subject, $messages, $general, $emailMethod); 
             }
-            elseif($this->emailLog->sender->type == "sendgrid"){
+            elseif($this->emailLog->sender->type == "sendgrid") {
                 
                 SendEmail::sendGrid($emailFrom, $emailFromName, $emailTo, $subject, $messages, $this->emailLog, @$emailMethod->mail_gateways->secret_key);
             }

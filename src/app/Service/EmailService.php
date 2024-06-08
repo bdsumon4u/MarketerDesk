@@ -190,14 +190,15 @@ class EmailService
             if(!filter_var($value, FILTER_VALIDATE_EMAIL)){
                 continue;
             }
-            
             $prepare  = $this->prepParams($value, $request, (int)$emailMethod->id, $emailGroupName, $userId);
             $emailLog = $this->save($prepare);
-            if (count($emailAllNewArray) > 1 && $emailLog->status == 1) { 
-
-                ProcessEmail::dispatch($emailLog);
-            } else {
-
+            if ($request->input('schedule') == 1 && $emailLog->status == 1) { 
+                
+                if(count($emailAllNewArray) > 1) {
+                    
+                    ProcessEmail::dispatch($emailLog);
+                } else {
+               
                 $general       = GeneralSetting::first();
                 $emailTo       = $emailLog->to;
                 $subject       = $emailLog->subject;
@@ -245,6 +246,8 @@ class EmailService
                     SendEmail::sendGrid($emailFrom, $emailFromName, $emailTo, $subject, $messages, $emailLog, @$emailMethod->mail_gateways->secret_key);
                 }
             }
+                
+            } 
         }
     }
 
@@ -331,6 +334,4 @@ class EmailService
             ]);
         }
     }
-
-    
 }

@@ -44,10 +44,10 @@ class CronController extends Controller
        
         $setting = GeneralSetting::first();
         $this->smsSchedule();
-        $this->whatsAppSchedule();
+        // $this->whatsAppSchedule();
         $this->emailSchedule();
         $this->unlinkImportFile();
-        // $this->gatewayCheck();
+        $this->gatewayCheck();
         $this->androidApiSim();
         $this->subscription();
         if(Carbon::parse($setting->schedule_at)->addMinute(30) < Carbon::now()){
@@ -88,14 +88,14 @@ class CronController extends Controller
     {
         
         foreach($campaigns as $campaign){
-            
+           
             $expiredTime = $campaign->schedule_time;
            
             $now = Carbon::now()->toDateTimeString();
             
            
             if ($now >= $expiredTime &&  $campaign->status != 'Ongoing') {
-                
+               
                 if($campaign->status =='Completed' && !$campaign->schedule){
                     continue;
                 }
@@ -113,10 +113,11 @@ class CronController extends Controller
                 $campaign->status = 'Ongoing';
                 $campaign->save();
                 if($campaign->schedule){
-
-                    $days = self::getRepeatDay($campaign->schedule);
-                    $rescheduleDate = Carbon::parse($campaign->last_corn_run)->addDays($days);
                     
+                    $days = self::getRepeatDay($campaign->schedule);
+                    
+                    $rescheduleDate = Carbon::parse($campaign->last_corn_run)->addDays($days);
+                   
                     $campaign->schedule_status = 'Later';
                     $campaign->schedule_time =  $rescheduleDate ;
                     $campaign->save();
@@ -220,7 +221,7 @@ class CronController extends Controller
                             break;
                         }
                     }
-                    
+                   
                     
                     $log = new WhatsappLog();
                     $log->user_id = $campaign->user_id;
@@ -253,6 +254,7 @@ class CronController extends Controller
                     $log->save();
                     $contact->status = "Processing";
                     $contact->save();
+                    
                     ProcessWhatsapp::dispatch($log)->delay(Carbon::now()->addSeconds($addSecond));
                 }
             }
@@ -401,8 +403,9 @@ class CronController extends Controller
                     if ($campaign->json_body->method == "android" && $campaign->sender_id == "-1") {
                        
                         $allAvailableSims = AndroidApiSimInfo::where("status", AndroidApiSimInfo::ACTIVE)->pluck("id")->toArray();
-                        $log->android_gateway_sim_id = $allAvailableSims[array_rand($allAvailableSims)];
-
+                        if($allAvailableSims) {
+                            $log->android_gateway_sim_id = $allAvailableSims[array_rand($allAvailableSims)];
+                        }
                     } else {
                         $log->android_gateway_sim_id = null;
                     }
@@ -416,6 +419,7 @@ class CronController extends Controller
 
     public static function getRepeatDay($schedule) {
 
+        
         if ($schedule->repeat_format == 'day') {
 
             return $schedule->repeat_number;
@@ -463,7 +467,15 @@ class CronController extends Controller
             	
             }
             if (!empty($androidSimInfos)) {
-                $smslog->android_gateway_sim_id = $androidSimInfos[array_rand($androidSimInfos,1)];
+
+                $android_sim_id = array_rand($androidSimInfos,1);
+                if($android_sim_id) {
+
+                    $sim_number = AndroidApiSimInfo::where("id", $android_sim_id)->value("sim_number");
+                    $smslog->sim_number = $sim_number;
+                }
+                $smslog->android_gateway_sim_id = $androidSimInfos[$android_sim_id];
+                
                 $smslog->save();
             }
         }
@@ -482,17 +494,20 @@ class CronController extends Controller
 
     protected function gatewayCheck(): void
     {
-        $smslogs = SMSlog::whereNotNull('android_gateway_sim_id')->where('status', 1)->get();
+        $smslogs = SMSlog::whereNull('android_gateway_sim_id')->where('status', 1)->get();
+
         foreach ($smslogs as $key => $smslog) {
+
             if (isset($smslog->androidGateway)) {
-                if($smslog->androidGateway->status == 2){
+
+                if($smslog->androidGateway->status == 2) {
+
                     $smslog->android_gateway_sim_id = null;
                     $smslog->save();
                 }
             }
         }
     }
-
 
     protected function subscription(): void
     {
@@ -514,6 +529,7 @@ class CronController extends Controller
 
         foreach($smslogs as $smslog) {
 
+            
             $expiredTime = Carbon::parse($smslog->initiated_time);
             $now = Carbon::parse(Carbon::now()->toDateTimeString());
 
@@ -528,10 +544,14 @@ class CronController extends Controller
             if($smsGateway == 1){
                 $smslog->status = 1;
                 $this->smsService->sendSmsByOwnGateway($smslog, $diffInSeconds);
-            }else{
-                $smslog->status = 1;
-                $smslog->api_gateway_id = null;
-                $smslog->android_gateway_sim_id = null;
+            } else {
+ 
+                if(Carbon::now()->toDateTimeString() >= $smslog->initiated_time) {
+
+                    $smslog->status = 1;
+                    $smslog->api_gateway_id = null;
+                    $smslog->android_gateway_sim_id = null;
+                }
             }
             
             $smslog->save();
@@ -569,7 +589,7 @@ class CronController extends Controller
                 $rand = rand($whatsAppLog->whatsappGateway?->min_delay, $whatsAppLog->whatsappGateway?->max_delay);
                 $addSecond = $i * $rand;
                 ProcessWhatsapp::dispatch($whatsAppLog)->delay(Carbon::now()->addSeconds($addSecond + $diffInSeconds));
-                
+                $i++;
             }catch (\Exception $exception){
                 Log::debug('Whatsapp Gateway');
                 $this->whatsAppService->addedCredit($whatsAppLog,$exception->getMessage());

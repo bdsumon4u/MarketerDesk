@@ -12,7 +12,7 @@ return [
     |
     */
     'core' => [
-        'appVersion' => '2.3.1',
+        'appVersion' => '2.3.4',
         'minPhpVersion' => '8.1'
     ],
     'final' => [

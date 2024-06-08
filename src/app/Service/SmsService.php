@@ -181,9 +181,15 @@ class SmsService {
 
                 $smslog->status = $status;
                 if ($sim_id) {
-                    
-                    $smslog->api_gateway_id = null;
+
+                    $sim_number                     = AndroidApiSimInfo::where("id", $sim_id)->value("sim_number");
+                    $smslog->api_gateway_id         = null;
                     $smslog->android_gateway_sim_id = $sim_id;
+                    $smslog->sim_number             = $sim_number;
+                    $smslog->save();
+                } elseif(!$smslog->api_gateway_id && !$sim_id) {
+                    
+                    $smslog->android_gateway_sim_id = null;
                     $smslog->save();
                 }
                 if($smslog->api_gateway_id) {
@@ -304,7 +310,8 @@ class SmsService {
             if ($request->has("channel")) {
 
                 $allContactNumber[] = $contact->pluck("$request->channel".'_contact')->toArray();
-                $numberGroupName    = $contact->pluck('id', "$request->channel".'_contact')->toArray();
+                $numberGroupName    = $contact->pluck('first_name', "$request->channel".'_contact')->toArray();
+                
             }
         }
     }
@@ -317,7 +324,7 @@ class SmsService {
      */
     public function processFile(Request $request, array &$allContactNumber, array &$numberGroupName): void {
        
-        if ($request->file) {
+        if ($request->has('file')) {
 
             $service   = new FileProcessService();
             $extension = strtolower($request->file('file')->getClientOriginalExtension());
@@ -365,13 +372,14 @@ class SmsService {
      * @param string $message
      * @return string
      */
-    public function getFinalContent(string $value, array $numberGroupName, string $message): string {
+    public function getFinalContent(mixed $value, array $numberGroupName, string $message): string {
         
-        $finalContent = textSpinner(str_replace('{{name}}',$value, offensiveMsgBlock($message)));
+        
+        $finalContent = textSpinner(str_replace("{{first_name}}",$value, offensiveMsgBlock($message)));
         
         if (array_key_exists($value,$numberGroupName)) {
 
-            $finalContent = str_replace('{{name}}', $numberGroupName ? $numberGroupName[$value]:$value, offensiveMsgBlock($message));
+            $finalContent = str_replace('{{first_name}}', $numberGroupName ? $numberGroupName[$value]:$value, offensiveMsgBlock($message));
         }
         return $finalContent;
     }
@@ -387,12 +395,15 @@ class SmsService {
     public function prepParams(string $contact, StoreSMSRequest $request, array $numberGroupName, ?int $apiGatewayId, ?int $simId, ?int $userId = null): array {   
        
         $generalSetting = GeneralSetting::first();
-        $contact        = filterContactNumber($contact);
-        $value          = array_key_exists($contact, $numberGroupName) ? $numberGroupName[$contact] : $contact;
+        $value          = array_key_exists($contact, $numberGroupName) ? $numberGroupName[$contact] ?? translate("User") : $contact;
         $setTimeInDelay = $request->input('schedule') == 2 ? $request->input('schedule_date') : Carbon::now();
         $wordLength     = $request->input('smsType') == "plain" ? $generalSetting->sms_word_text_count : $generalSetting->sms_word_unicode_count;
         $finalContent   = $this->getFinalContent($value, $numberGroupName, $request->input('message'));
-        
+        $sim_number     = null;
+        if($simId) {
+
+            $sim_number = AndroidApiSimInfo::where("id", $simId)->value("sim_number");
+        }
         return  [
             'to'                     => $contact,
             'word_length'            => $wordLength,
@@ -404,6 +415,7 @@ class SmsService {
             'schedule_status'        => $request->input('schedule'),
             'api_gateway_id'         => $apiGatewayId,
             'android_gateway_sim_id' => $simId,
+            'sim_number'             => $sim_number ? $sim_number : null
         ];
     }
 
@@ -424,6 +436,7 @@ class SmsService {
             'schedule_status'        => $params['schedule_status'],
             'api_gateway_id'         => $params['api_gateway_id'],
             'android_gateway_sim_id' => $params['android_gateway_sim_id'],
+            'sim_number'             => $params['sim_number'],
         ]);
     }
 

@@ -10,9 +10,14 @@
                         <div class="card-header">
                             <h4 class="card-title"> {{ translate('Android Gateway List')}}</h4>
                             
-                            <a href="javascript:void(0);" class="i-btn primary--btn btn--md text-white" data-bs-toggle="modal" data-bs-target="#createandroid" title="{{ translate('Create New Android GW') }}">
+                            <div class="d-flex gap-3">
+                                <a href="javascript:void(0);" class="i-btn primary--btn btn--md text-white" data-bs-toggle="modal" data-bs-target="#createandroid" title="{{ translate('Create New Android GW') }}">
                                 <i class="fa-solid fa-plus"></i> {{translate('Add New')}}
-                            </a>
+                                </a>
+                                <a href="javascript:void(0);" class="i-btn info--btn btn--md text-white" data-bs-toggle="modal" data-bs-target="#addApkLink" title="{{translate('Add APK file Link')}}">
+                                    {{translate('Add APK File Link')}}
+                                </a>
+                            </div>
                         </div>
                         <div class="card-body px-0">
                             <div class="responsive-table">
@@ -75,6 +80,36 @@
                     
                 </div>
 
+
+                <div class="modal fade" id="addApkLink" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form action="{{route('admin.sms.gateway.android.link.store')}}" method="POST">
+                                @csrf
+                                <div class="modal-body">
+                                    <div class="card">
+                                        <div class="card-header bg--lite--violet">
+                                            <div class="card-title text-center text--light">{{ translate('Add a download link for users') }}</div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="mb-3">
+                                                <label for="link" class="form-label">{{ translate('App Link') }} <sup class="text--danger">*</sup></label>
+                                                <input type="text" class="form-control" id="app_link" name="app_link" placeholder="{{ translate('Insert link')}}" value="{{ $general->app_link }}" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="modal_button2 modal-footer">
+                                    <div class="d-flex align-items-center justify-content-center gap-3">
+                                        <button type="button" class="i-btn primary--btn btn--md" data-bs-dismiss="modal">{{ translate('Cancel') }}</button>
+                                        <button type="submit" class="i-btn danger--btn btn--md">{{ translate('Submit')}}</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="modal fade" id="createandroid" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog">

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Apr 16, 2024 at 07:09 AM
+-- Generation Time: May 05, 2024 at 01:05 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.2.16
 
@@ -477,6 +477,7 @@ CREATE TABLE `general_settings` (
   `email_gateway_id` int DEFAULT NULL,
   `mail_from` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `email_template` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `app_link` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `social_login` json DEFAULT NULL,
   `webhook` json DEFAULT NULL,
   `captcha_with_login` enum('true','false') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -516,8 +517,8 @@ CREATE TABLE `general_settings` (
 -- Dumping data for table `general_settings`
 --
 
-INSERT INTO `general_settings` (`id`, `app_version`, `site_name`, `phone`, `country_code`, `contact_attributes`, `sms_gateway`, `currency_name`, `currency_symbol`, `sms_gateway_id`, `email_gateway_id`, `mail_from`, `email_template`, `social_login`, `webhook`, `captcha_with_login`, `captcha_with_registration`, `default_recaptcha`, `recaptcha`, `bee_plugin`, `frontend_section`, `registration_status`, `cron_job_run`, `cron_pop_up`, `plan_id`, `sign_up_bonus`, `debug_mode`, `maintenance_mode`, `landing_page`, `maintenance_mode_message`, `schedule_at`, `whatsapp_word_count`, `sms_word_text_count`, `sms_word_unicode_count`, `primary_color`, `secondary_color`, `panel_logo`, `copyright`, `site_logo`, `favicon`, `admin_card`, `admin_bg`, `site_icon`, `email_verification_status`, `created_at`, `updated_at`) VALUES
-(2, '2.3.1', 'XSender', '0123456789', '1', '{\"date_of_birth\":{\"status\":true,\"type\":1}}', 1, 'USD', '$', 6, 1, 'demo@gmail.com', '{{message}}', '{\"g_client_id\": \"####\", \"g_client_secret\": \"####\", \"g_client_status\": \"2\"}', '{\"callback_url\": \"####\", \"verify_token\": \"###\"}', 'false', 'false', 'false', '{\"recaptcha_key\": \"####\", \"recaptcha_secret\": \"###\", \"recaptcha_status\": \"2\"}', '{\"status\":\"1\",\"client_id\":\"b2369021-3e95-4ca4-a8c8-2ed3e2531865\",\"client_secret\":\"uL3UKV8V4RLv77vodnNTM8e93np9OYsS5P2mJ0373Nt9ghbwoRbn\"}', '{\"heading\":\"Over 1K people using this app. Smooth SMS and Email Marketing tools\",\"sub_heading\":\"Our mass SMS and Email service provide you to reach more client engage, and also you can fill your target with the potential customer on the basis of different types of products and services which is you want to reach your client door. So why late if no account, sign up quickly and get your expect to plan and start from today with the best and cheap SMS cost!\"}', 1, '2024-03-18 00:01:54', 'false', 1, 1, 'false', 'false', 'true', 'Please be advised that there will be scheduled downtime across our network from 12.00AM to 2.00AM', '2024-03-18 00:00:13', 320, 160, 70, '191970', '2b2bba', '65d7395ad5b711708603738.png', 'iGen Solutions Ltd', '65d7395ae94641708603738.png', '65d7395b06f201708603739.png', '65d73b9ae784b1708604314.png', '65d73b9ab2cb11708604314.png', '65d7395b0a1b11708603739.png', 1, '2022-04-13 12:18:21', '2024-04-16 01:08:50');
+INSERT INTO `general_settings` (`id`, `app_version`, `site_name`, `phone`, `country_code`, `contact_attributes`, `sms_gateway`, `currency_name`, `currency_symbol`, `sms_gateway_id`, `email_gateway_id`, `mail_from`, `email_template`, `app_link`, `social_login`, `webhook`, `captcha_with_login`, `captcha_with_registration`, `default_recaptcha`, `recaptcha`, `bee_plugin`, `frontend_section`, `registration_status`, `cron_job_run`, `cron_pop_up`, `plan_id`, `sign_up_bonus`, `debug_mode`, `maintenance_mode`, `landing_page`, `maintenance_mode_message`, `schedule_at`, `whatsapp_word_count`, `sms_word_text_count`, `sms_word_unicode_count`, `primary_color`, `secondary_color`, `panel_logo`, `copyright`, `site_logo`, `favicon`, `admin_card`, `admin_bg`, `site_icon`, `email_verification_status`, `created_at`, `updated_at`) VALUES
+(2, '2.3.4', 'XSender', '0123456789', '1', '{\"date_of_birth\":{\"status\":true,\"type\":1}}', 1, 'USD', '$', 6, 1, 'demo@gmail.com', '{{message}}', NULL, '{\"g_client_id\": \"####\", \"g_client_secret\": \"####\", \"g_client_status\": \"2\"}', '{\"callback_url\": \"####\", \"verify_token\": \"###\"}', 'false', 'false', 'false', '{\"recaptcha_key\": \"####\", \"recaptcha_secret\": \"###\", \"recaptcha_status\": \"2\"}', '{\"status\":\"1\",\"client_id\":\"b2369021-3e95-4ca4-a8c8-2ed3e2531865\",\"client_secret\":\"uL3UKV8V4RLv77vodnNTM8e93np9OYsS5P2mJ0373Nt9ghbwoRbn\"}', '{\"heading\":\"Over 1K people using this app. Smooth SMS and Email Marketing tools\",\"sub_heading\":\"Our mass SMS and Email service provide you to reach more client engage, and also you can fill your target with the potential customer on the basis of different types of products and services which is you want to reach your client door. So why late if no account, sign up quickly and get your expect to plan and start from today with the best and cheap SMS cost!\"}', 1, '2024-03-18 00:01:54', 'false', 1, 1, 'false', 'false', 'true', 'Please be advised that there will be scheduled downtime across our network from 12.00AM to 2.00AM', '2024-03-18 00:00:13', 320, 160, 70, '191970', '2b2bba', '65d7395ad5b711708603738.png', 'iGen Solutions Ltd', '65d7395ae94641708603738.png', '65d7395b06f201708603739.png', '65d73b9ae784b1708604314.png', '65d73b9ab2cb11708604314.png', '65d7395b0a1b11708603739.png', 1, '2022-04-13 12:18:21', '2024-05-05 07:05:23');
 
 -- --------------------------------------------------------
 
@@ -652,7 +653,9 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (24, '2024_03_24_063427_alter_table_s_m_slogs', 22),
 (25, '2024_03_24_063414_alter_table_whatsapp_logs', 23),
 (26, '2024_03_10_093700_drop_whatsapp_device_columns', 24),
-(27, '2024_03_11_105148_drop_android_api_sim_info_columns', 25);
+(27, '2024_03_11_105148_drop_android_api_sim_info_columns', 25),
+(28, '2024_05_05_102031_add_sim_number_to_s_m_slogs_table', 26),
+(29, '2024_05_05_113347_add_app_link_to_general_settings_table', 27);
 
 -- --------------------------------------------------------
 
@@ -1002,6 +1005,7 @@ CREATE TABLE `s_m_slogs` (
   `credit_id` int DEFAULT NULL,
   `word_length` int NOT NULL DEFAULT '1',
   `uid` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `sim_number` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `api_gateway_id` int DEFAULT NULL,
   `android_gateway_sim_id` int DEFAULT NULL,
   `user_id` int DEFAULT NULL,
@@ -1095,7 +1099,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `uid`, `name`, `email`, `google_id`, `credit`, `email_credit`, `whatsapp_credit`, `sms_gateway`, `webhook_token`, `contact_attributes`, `address`, `image`, `password`, `status`, `api_key`, `gateway_credentials`, `email_verified_send_at`, `created_at`, `updated_at`, `email_verified_status`, `email_verified_code`, `email_verified_at`) VALUES
-(1, 'Jh1ClS5Q-zyAXTR0GkvJGu5-uhJzXki6', 'Demo User', 'demo@user.com', NULL, 10, 10, '10', 1, '###', '[]', NULL, NULL, '$2y$10$9.zTkvRZ2eZbEXTTHMCeo.3//sOnO/LAEWgnSVTXGC4QPEjK0u2Iu', 1, NULL, NULL, NULL, '2024-02-13 05:14:43', '2024-04-16 01:08:50', 1, NULL, '2024-02-13 05:14:43');
+(1, '7qD7aZKB-RZpuminJI3oEC4-k4luRyyS', 'Demo User', 'demo@user.com', NULL, 10, 10, '10', 1, '###', '[]', NULL, NULL, '$2y$10$9.zTkvRZ2eZbEXTTHMCeo.3//sOnO/LAEWgnSVTXGC4QPEjK0u2Iu', 1, NULL, NULL, NULL, '2024-02-13 05:14:43', '2024-05-05 07:05:23', 1, NULL, '2024-02-13 05:14:43');
 
 -- --------------------------------------------------------
 
@@ -1632,7 +1636,7 @@ ALTER TABLE `languages`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT for table `oauth_clients`

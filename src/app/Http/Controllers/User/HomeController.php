@@ -450,9 +450,12 @@ class HomeController extends Controller
         $user           = Auth::user();
         $setting        = GeneralSetting::first();
         $allowed_access = planAccess($user);
+        $general 		= GeneralSetting::first();
+        
         if($allowed_access) {
 
             $allowed_access = (object)planAccess($user);
+           
         } else {
 
             $notify[] = ['error','Please Purchase A Plan'];
@@ -476,16 +479,23 @@ class HomeController extends Controller
         
         if(request()->routeIs('user.sms.gateway.sendmethod.gateway')) {
 
-            return view("user.gateway.settings.gateway", compact('title', 'smsGateways', 'defaultGateway', 'androids'));
+            return view("user.gateway.settings.gateway", compact('title', 'smsGateways', 'defaultGateway', 'androids', 'general'));
         }
         elseif(request()->routeIs('user.sms.gateway.sendmethod.api')) {
 
-            $gatewayCount = $gatewaysForCount->groupBy('type')->map->count(); 
-            return view("user.gateway.index", compact('title', 'smsGateways', 'defaultGateway', 'androids', 'credentials', 'user', 'gatewayCount', 'allowed_access'));
+            if($allowed_access->sms["is_allowed"]) {
+
+                $gatewayCount = $gatewaysForCount->groupBy('type')->map->count(); 
+                return view("user.gateway.index", compact('title', 'smsGateways', 'defaultGateway', 'androids', 'credentials', 'user', 'gatewayCount', 'allowed_access', 'general'));
+            } else {
+                $notify[] = ['error', "You Do Not Have The Permission To Create SMS Gateway!"];
+                return back()->withNotify($notify);
+            }
+           
         }
         elseif(request()->routeIs('user.gateway.sendmethod.android')) {
 
-            return view("user.android.gateways", compact('title', 'smsGateways', 'defaultGateway', 'androids', 'allowed_access'));
+            return view("user.android.gateways", compact('title', 'smsGateways', 'defaultGateway', 'androids', 'allowed_access', 'general'));
         }
     }
 

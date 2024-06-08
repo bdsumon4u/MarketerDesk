@@ -342,6 +342,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::prefix('android/gateway/')->name('sms.gateway.android.')->group(function () {
                 Route::get('gateway', [AndroidApiController::class, 'index'])->name('index');
                 Route::post('store', [AndroidApiController::class, 'store'])->name('store');
+                Route::post('link/store', [AndroidApiController::class, 'linkStore'])->name('link.store');
                 Route::post('update', [AndroidApiController::class, 'update'])->name('update');
                 Route::get('sim/list/{id}', [AndroidApiController::class, 'simList'])->name('sim.index');
                 Route::post('delete/', [AndroidApiController::class, 'delete'])->name('delete');

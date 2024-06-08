@@ -32,33 +32,33 @@ class AdminController extends Controller
 {
     public function index()
     {
-        $title = "Admin Dashboard";
-        $customers = User::where('status','!=','3')->orderBy('id', 'DESC')->take(8)->get();
+        $title       = "Admin Dashboard";
+        $customers   = User::where('status','!=','3')->orderBy('id', 'DESC')->take(8)->get();
         $paymentLogs = PaymentLog::orderBy('id', 'DESC')->where('status', '!=', 0)->with('user', 'paymentGateway','paymentGateway.currency')->take(8)->get();
-        $general = GeneralSetting::first();
-        $logs = [
+        $general     = GeneralSetting::first();
+        $logs        = [
             "sms" => [
-                'all' => SMSlog::count(),
+                'all'     => SMSlog::count(),
                 'success' => SMSlog::where('status',SMSlog::SUCCESS)->count(),
                 'pending' => SMSlog::where('status',SMSlog::PENDING)->count(),
-                'failed' => SMSlog::where('status',SMSlog::FAILED)->count(),
+                'failed'  => SMSlog::where('status',SMSlog::FAILED)->count(),
             ],
             "email" => [
-                'all' => EmailLog::count(),
+                'all'     => EmailLog::count(),
                 'success' => EmailLog::where('status',EmailLog::SUCCESS)->count(),
                 'pending' => EmailLog::where('status',EmailLog::PENDING)->count(),
-                'failed' => EmailLog::where('status',EmailLog::FAILED)->count(),
+                'failed'  => EmailLog::where('status',EmailLog::FAILED)->count(),
             ],
             'whats_app' => [
-                'all' => WhatsappLog::count(),
+                'all'     => WhatsappLog::count(),
                 'success' => WhatsappLog::where('status',WhatsappLog::SUCCESS)->count(),
                 'pending' => WhatsappLog::where('status',WhatsappLog::PENDING)->count(),
-                'failed' => WhatsappLog::where('status',EmailLog::FAILED)->count(),
+                'failed'  => WhatsappLog::where('status',EmailLog::FAILED)->count(),
             ],
         ];
 
         [$paymentReport, $paymentReportMonths] = $this->paymentReport();
-        $smsWhatsAppReport = $this->smsWhatsAppReports();
+        $smsWhatsAppReport                     = $this->smsWhatsAppReports();
 
         $totalUser = [
             'total_user' => User::count(),

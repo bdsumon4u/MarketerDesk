@@ -245,7 +245,7 @@ class CampaignService
             'from_name'      => $request->input('from_name'),
             'post_data'      => count($postData) > 0 ? $postData : null,
             'reply_to_email' => $request->input('reply_to_email'),
-            'status'         => $request->input('status', 'Active'),
+            'status'         => 'Active',
             'schedule_time'  => $request->input('schedule_date'),
         ];
        

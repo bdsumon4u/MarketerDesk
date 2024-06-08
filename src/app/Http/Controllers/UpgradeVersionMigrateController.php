@@ -68,6 +68,8 @@ class UpgradeVersionMigrateController extends Controller
                     '/database/migrations/2024_03_24_063443_alter_table_email_logs.php',
                     '/database/migrations/2024_03_24_063427_alter_table_s_m_slogs.php',
                     '/database/migrations/2024_03_24_063414_alter_table_whatsapp_logs.php',
+                    '/database/migrations/2024_05_05_102031_add_sim_number_to_s_m_slogs_table.php',
+                    '/database/migrations/2024_05_05_113347_add_app_link_to_general_settings_table.php',
                 ];
                 $dropTableOrColumn = [
                     '/database/migrations/2024_03_10_093700_drop_whatsapp_device_columns.php',

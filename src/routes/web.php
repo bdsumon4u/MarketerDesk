@@ -1,4 +1,4 @@
- <?php
+<?php
 
 use App\Http\Controllers\AuthorizationProcessController;
 use App\Http\Controllers\User\AndroidApiController;
@@ -282,7 +282,7 @@ Route::middleware(['auth','checkUserStatus','maintenance','demo.mode'])->prefix(
         Route::post('ipn/strip', [PaymentWithStripe::class, 'stripePost'])->name('payment.with.strip');
         Route::get('/strip/success', [PaymentWithStripe::class, 'success'])->name('payment.with.strip.success');
         Route::post('ipn/paypal', [PaymentWithPaypal::class, 'postPaymentWithpaypal'])->name('payment.with.paypal');
-        Route::get('ipn/paypal/status', [PaymentWithPaypal::class, 'getPaymentStatus'])->name('payment.paypal.status');
+        Route::get('ipn/paypal/status/{trx_code?}/{id?}/{status?}', [PaymentWithPaypal::class, 'getPaymentStatus'])->name('payment.paypal.status');
         Route::get('ipn/paystack', [PaymentWithPayStack::class, 'store'])->name('payment.with.paystack');
         Route::post('ipn/pay/with/sslcommerz', [SslCommerzPaymentController::class, 'index'])->name('payment.with.ssl');
         Route::post('success', [SslCommerzPaymentController::class, 'success']);
@@ -340,7 +340,6 @@ Route::middleware(['auth','checkUserStatus','maintenance','demo.mode'])->prefix(
         });
     });
 });
-Route::post('upload-wsa-file', [WebController::class, 'findAndUploadFile']);
 Route::middleware(['redirect.to.login'])->group(function () {
     Route::get('/', [WebController::class, 'index'])->name('home');
     Route::get('about/', [WebController::class, 'about'])->name('about');

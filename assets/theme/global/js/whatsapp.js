@@ -562,11 +562,10 @@
 
         const inputNumber = document.getElementById('number');
 
-        if (inputNumber) {
-            inputNumber.addEventListener("keyup", function () {
-              this.value = this.value.replace(/[^\d.-]/g, "");
-            });
-        }
+        inputNumber.addEventListener('keyup', function() {
+
+            this.value = this.value.replace(/[^\d.-]/g, '');
+        });
 
     }
 

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddWebhookToGeneralSettingsTable extends Migration
+class AddSimNumberToSMSlogsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class AddWebhookToGeneralSettingsTable extends Migration
      */
     public function up()
     {
-        Schema::table('general_settings', function (Blueprint $table) {
-            $table->json('webhook')->nullable()->after('social_login');
-            
+        Schema::table('s_m_slogs', function (Blueprint $table) {
+
+            $table->string('sim_number')->nullable()->after('uid');
         });
+       
     }
 
     /**
@@ -26,9 +27,9 @@ class AddWebhookToGeneralSettingsTable extends Migration
      */
     public function down()
     {
-        Schema::table('general_settings', function (Blueprint $table) {
-            $table->dropColumn('webhook');
-          
+        Schema::table('s_m_slogs', function (Blueprint $table) {
+
+            Schema::dropIfExists('sim_number');
         });
     }
 }

@@ -82,7 +82,7 @@
                                             {{ translate('Android Gateway')}}
                                                 @if(@$smsLog->androidGateway->sim_number!="")
                                                     <i class="las la-arrow-right"></i> <span class="text--violet fw-bold">
-                                                        {{$allowed_access->type == \App\Models\PricingPlan::USER ? @$smsLog->androidGateway->sim_number : "*********"}}</span>
+                                                        {{translate("Sim Number: ")}}{{$allowed_access->type == \App\Models\PricingPlan::USER ? @$smsLog->sim_number ? $smsLog->sim_number : null : "*********"}}</span>
                                                         
                                                 @endif
                                             @endif

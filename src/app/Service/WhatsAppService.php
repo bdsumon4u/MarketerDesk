@@ -41,8 +41,7 @@ class WhatsAppService
             if ($request->hasFile($file)) {
 
                 $message = $file;
-                // maximum allowed file size: 100MB
-                $rules = ['required', new MessageFileValidationRule($file), 'max:100000'];
+                $rules = ['required', new MessageFileValidationRule($file)];
                 break;
             }
         }
@@ -260,12 +259,13 @@ class WhatsAppService
                 $log->schedule_status = $request->input('schedule');
                 $log->save();
                 
-                if (count($contactNewArray) > 1 && $log->status == WhatsappLog::PENDING) { 
+                if (count($contactNewArray) == 1 && $request->input('schedule') == WhatsappLog::PENDING) { 
 
-                    ProcessWhatsapp::dispatch($log);
-                    
-                } else {
                     SendWhatsapp::sendCloudApiMessages($log, $wordLength);
+                    
+                } elseif(count($contactNewArray) > 1) {
+                    
+                    ProcessWhatsapp::dispatch($log);
                 }
             }
             
@@ -309,13 +309,14 @@ class WhatsAppService
                     $log->schedule_status = $request->input('schedule');
                     $log->save();
                     
-                    if(count($contactNewArray) > 1 && $log->status == WhatsappLog::PENDING) { 
-    
-                        ProcessWhatsapp::dispatch($log)->delay(Carbon::parse($setTimeInDelay)->addSeconds($addSecond));
-                        
-                    } else {
+                    if (count($contactNewArray) == 1 && $request->input('schedule') == WhatsappLog::PENDING) { 
 
                         SendWhatsapp::sendNodeMessages($log, null);
+                        
+                    } elseif(count($contactNewArray) > 1) {
+                        
+                        ProcessWhatsapp::dispatch($log)->delay(Carbon::parse($setTimeInDelay)->addSeconds($addSecond));
+                        $i++;
                     }
                 }
             } else {
@@ -340,14 +341,15 @@ class WhatsAppService
                     $log->file_info       = count($postData) > 0 ? $postData : null;
                     $log->schedule_status = $request->input('schedule');
                     $log->save();
-                    
-                    if($log->status == WhatsappLog::PENDING && count($contactNewArray) > 1) { 
+
+                    if (count($contactNewArray) == 1 && $request->input('schedule') == WhatsappLog::PENDING) { 
+
+                        SendWhatsapp::sendNodeMessages($log, null);
+                        
+                    } elseif(count($contactNewArray) > 1) {
                         
                         ProcessWhatsapp::dispatch($log)->delay(Carbon::parse($setTimeInDelay)->addSeconds($addSecond));
                         $i++;
-                    } else {
-
-                        SendWhatsapp::sendNodeMessages($log, null);
                     }
                 }
             }

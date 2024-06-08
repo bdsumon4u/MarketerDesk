@@ -102,11 +102,10 @@
                                             <p class="mb-1">
                                                 {{ translate('Android')}}
                                             </p>
-                                            @if(@$smsLog->androidGateway->sim_number!="")
-                                                <span class="bg--lite--info text--info rounded px-2 py-1 d-inline-block fs--12">
-                                                    {{"Sim Number: ".@$smsLog->androidGateway->sim_number}}
-                                                </span>
-                                            @endif
+                                           
+                                            <span class="bg--lite--info text--info rounded px-2 py-1 d-inline-block fs--12">
+                                                {{translate("Sim Number: ")}}{{@$smsLog->sim_number ? $smsLog->sim_number : null}}
+                                            </span>
                                         @endif
                                     </td>
 
@@ -164,7 +163,7 @@
                                             @endif
                                             
                                             <a class="s_btn--coral text--light statusupdate"
-                                                data-id="{{$smsLog->id}}"
+                                                data-smslogid="{{$smsLog->id}}"
                                                 data-androidSimId="{{$smsLog->androidGateway?->id}}"
                                                 data-bs-placement="top" title="Status Update"
                                                 data-bs-toggle="modal"
@@ -217,8 +216,7 @@
         <div class="modal-content">
             <form action="{{route('admin.sms.status.update')}}" method="POST">
                 @csrf
-                <input type="hidden" name="id">
-                <input type="hidden" name="smslogid">
+                <input type="hidden" name="smslogid" class="smslogid-input">
                 <div class="modal-body">
                     <div class="card">
                         <div class="card-header bg--lite--violet">
@@ -320,37 +318,38 @@
         (function($){
             "use strict";
             $('.statusupdate').on('click', function(){
-                
-				$(".android-sim-select").addClass("d-none");
-				$('#status').prop("selectedIndex", 0);
+                $(".android-sim-select").addClass("d-none");
+                $('#status').prop("selectedIndex", 0);
                 var modal = $('#smsstatusupdate');
-                modal.find('input[name=id]').val($(this).data('id'));
-				var sim_id = $(this).attr("data-androidSimId");
-                
-				$("#status").on("change", function() {
+                var newArray = [];
+
+                $('.smslogid-input').val($(this).attr('data-smslogid'));
+                var sim_id = $(this).attr("data-androidSimId");
+
+                $("#status").on("change", function() {
+                    if(!isEmpty(sim_id)) {
+                        if($(this).val() == 1) {
+                            $(".android-sim-select").removeClass("d-none");
+                            $('.android-sim-select').find('.android_gateways').prop("selectedIndex", 0);
+                        }
+                    } else {
+                        $('.android-sim-select').find('.sim-list').prop("selectedIndex", -1);
+                        $('.android-sim-select').find('.android_gateways').prop("selectedIndex", -1);
+                        $(".android-sim-select").addClass("d-none");
+                    }
+                })
+
+                function isEmpty(value) {
+                    return (value == null || (typeof value === "string" && value.trim().length === 0));
+                }
+
+                $("input:checkbox[name=smslogid]:checked").each(function(){
+                    newArray.push($(this).val());
+                });
+                if (newArray.length > 0) {
+                    modal.find('input[name=smslogid]').val(newArray.join(','));
                     
-					if(!isEmpty(sim_id)) {
-
-						if($(this).val() == 1) {
-
-							$(".android-sim-select").removeClass("d-none");
-							$('.android-sim-select').find('.android_gateways').prop("selectedIndex", 0);
-						}
-
-					} else {
-
-						$('.android-sim-select').find('.sim-list').prop("selectedIndex", -1);
-						$('.android-sim-select').find('.android_gateways').prop("selectedIndex", -1);
-						$(".android-sim-select").addClass("d-none");
-					}
-				})
-
-
-
-				function isEmpty(value) {
-					return (value == null || (typeof value === "string" && value.trim().length === 0));
-				}
-
+                }
                 modal.modal('show');
             });
 
@@ -371,17 +370,6 @@
             $('.checkAll').click(function(){
                 $('input:checkbox').not(this).prop('checked', this.checked);
             });
-
-            $('.statusupdate').on('click', function(){
-                var modal = $('#smsstatusupdate');
-                var newArray = [];
-                $("input:checkbox[name=smslogid]:checked").each(function(){
-                    newArray.push($(this).val());
-                });
-                modal.find('input[name=smslogid]').val(newArray.join(','));
-                modal.modal('show');
-            });
-
 
 
 			$('.android_gateways').change(function () {

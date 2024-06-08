@@ -283,7 +283,22 @@ class CampaignController extends Controller
         return back()->withNotify($notify);
     }
 
+    /**
+     * get all contacts by campaign id
+     * @param $id
+     */
+    public function contactDelete(Request $request) {
 
+        $campaignContact = CampaignContact::where('id',$request->id)->first();
+        if($campaignContact) {
+ 
+          $campaignContact->delete();
+        }
+        $notify[] = ['success', translate('Contact Deleted From Campaigns')];
+        return back()->withNotify($notify);
+        
+    }
+    
     public function deleteContact(Request $request) {
 
         $campaignContact = CampaignContact::findOrFail($request->input('id'));

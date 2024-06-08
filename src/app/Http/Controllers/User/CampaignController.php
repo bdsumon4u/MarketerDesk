@@ -204,8 +204,8 @@ class CampaignController extends Controller
             
             if($request->input("whatsapp_sending_mode") == "without_cloud_api") {
 
-                $defaultGateway = $request->input("whatsapp_device_id") == "-1" ? WhatsappDevice::where('user_id', auth()->guard()->user()->id)->where('status', 'connected')->pluck("credentials", "id")->toArray()
-                               : WhatsappDevice::where('user_id', auth()->guard()->user()->id)->where("id", $request->input("whatsapp_device_id"))->where('status', 'connected')->pluck("credentials", "id")->toArray();
+                $defaultGateway = $request->input("whatsapp_device_id") == "-1" ? WhatsappDevice::where('admin_id', auth()->guard('admin')->user()->id)->where('status', 'connected')->pluck("credentials", "id")->toArray()
+                               : WhatsappDevice::where('admin_id', auth()->guard('admin')->user()->id)->where("id", $request->input("whatsapp_device_id"))->where('status', 'connected')->pluck("credentials", "id")->toArray();
             } else {
                 
             }
@@ -304,7 +304,7 @@ class CampaignController extends Controller
             array_push($contacts, $group);
         }
    
-        if($request->file){
+        if($request->has('file')){
             
             $service   = new FileProcessService();
             $extension = strtolower($request->file->getClientOriginalExtension());
@@ -473,6 +473,12 @@ class CampaignController extends Controller
             $defaultGateway = Gateway::whereNotNull('mail_gateways')->where("user_id", auth()->user()->id)->where('is_default', 1)->first();
         }
 
+        if (count($contactsData['contacts']) == 0) {
+
+            $notify[] = ['error', translate("A campaign cannot be updated without contacts.")];
+            return back()->withNotify($notify);
+        }
+
         if($request->input('gateway_type')) {
 
             $gatewayMethod = Gateway::where('id', $request->input('gateway_id'))->firstOrFail();
@@ -507,11 +513,8 @@ class CampaignController extends Controller
             CampaignSchedule::where('campaign_id',$campaign->id)->delete();
             $this->campaignService->saveSchedule($request, $campaign->id);
         }
-
-        if (count($contactsData['contacts']) != 0) {
-            CampaignContact::where('campaign_id', $campaign->id)->delete();
-            $this->campaignService->saveContacts($contactsData, $campaign);
-        }
+        CampaignContact::where('campaign_id',$campaign->id)->delete();
+        $this->campaignService->saveContacts($contactsData, $campaign);
         $notify[]     = ['success', translate('Campaign Updated Successfully')];
         return back()->withNotify($notify);
         

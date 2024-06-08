@@ -14,7 +14,7 @@
             <form action="{{route('admin.campaign.update')}}" method="POST" enctype="multipart/form-data">
                @csrf
                <div class="row g-4">
-                     <div class="order-2 col-xl-9 order-xl-1">
+                     <div class="col-xl-9 order-xl-1 order-2">
                         <div class="form-wrapper">
                             <h6 class="form-wrapper-title">{{$channel}}{{translate('Set Target Audience')}}</h6>
 
@@ -42,8 +42,8 @@
                                 </div>
                             </div>
 
-                            <div class="mt-4 file-tab">
-                                <ul class="gap-2 mb-3 nav nav-tabs" id="myTabContent" role="tablist">
+                            <div class="file-tab mt-4">
+                                <ul class="nav nav-tabs mb-3 gap-2" id="myTabContent" role="tablist">
                                     <li class="nav-item group-audience" role="presentation">
                                         <button class="nav-link active" id="group-tab" data-bs-toggle="tab" data-bs-target="#group-tab-pane" type="button" role="tab" aria-controls="group-tab-pane" aria-selected="false"><i class="las la-users"></i> {{ translate('Group Audience') }}</button>
                                     </li>
@@ -80,7 +80,7 @@
                                                     </label>
                                                 </div>
 
-                                                <div class="mt-3 form-item group-logic-items"></div>
+                                                <div class="form-item group-logic-items mt-3"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -91,7 +91,7 @@
                                             <div class="upload-filed">
                                                 <input type="file" name="file" id="file" />
                                                 <label for="file">
-                                                    <div class="gap-3 d-flex align-items-center">
+                                                    <div class="d-flex align-items-center gap-3">
                                                     <span class="upload-drop-file">
                                                         <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"x="0" y="0" viewBox="0 0 128 128" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g><path fill="#f6f0ff" d="M99.091 84.317a22.6 22.6 0 1 0-4.709-44.708 31.448 31.448 0 0 0-60.764 0 22.6 22.6 0 1 0-4.71 44.708z" opacity="1" data-original="#f6f0ff" class=""></path><circle cx="64" cy="84.317" r="27.403" fill="#6009f0" opacity="1" data-original="#6009f0" class=""></circle><g fill="#f6f0ff"><path d="M59.053 80.798v12.926h9.894V80.798h7.705L64 68.146 51.348 80.798zM68.947 102.238h-9.894a1.75 1.75 0 0 1 0-3.5h9.894a1.75 1.75 0 0 1 0 3.5z" fill="#f6f0ff" opacity="1" data-original="#f6f0ff" class=""></path></g></g></svg>
                                                     </span>
@@ -100,7 +100,7 @@
                                                 </label>
                                             </div>
                                             
-                                            <div class="mt-3 form-text">
+                                            <div class="form-text mt-3">
                                                 {{ translate('Download Sample: ')}}
                                                 @if($channel == \App\Models\Campaign::EMAIL)
                                                     <a href="{{route('demo.file.download', ['extension' => 'csv' , 'type' => $channel])}}" class="badge badge--primary"><i class="fa fa-download" aria-hidden="true"></i> {{ translate('csv')}}</a>
@@ -121,7 +121,7 @@
 
                         @if($channel == \App\Models\Campaign::SMS)
                             @if($general->sms_gateway == 1)
-                                <div class="mt-3 form-wrapper select-sms-gateway">
+                                <div class="form-wrapper select-sms-gateway mt-3">
                                     <h6 class="form-wrapper-title" title="{{ translate('If left unselected then the default gateway will be selected') }}">{{ translate('Select SMS Gateway')}}</h6>
                                     <div class="sms-gateway">
                                         <label for="repeat-time" class="form-label">{{translate('Sms Gateway Type')}} </label>
@@ -132,13 +132,13 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="mt-4 sms-gateway sms-gateways d-none">
+                                    <div class="sms-gateway sms-gateways mt-4 d-none">
                                         <label for="gatewwayId" class="form-label">{{translate('Sms Gateway')}} <sup class="text-danger">*</sup></label>
                                         <select class="form-control gateway-collect" name="gateway_id" id="gatewwayId"></select>
                                     </div>
                                 </div>
                             @else
-                                <div class="mt-3 form-wrapper select-android-gateway">
+                                <div class="form-wrapper select-android-gateway mt-3">
                                     <h6 class="form-wrapper-title" title="{{ translate('If left unselected then a random sim will be choosen') }}">{{ translate('Select Android Gateway')}}</h6>
                                     <div class="android-gateway">
                                         <label for="android_gateways_id" class="form-label">{{translate('Android Gateway')}} </label>
@@ -149,7 +149,7 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="mt-4 android-sim d-none">
+                                    <div class="android-sim mt-4 d-none">
                                         <label for="sim_id" class="form-label">{{translate('Choose A SIM Number')}} <sup class="text-danger">*</sup></label>
                                         <select class="form-select sim-list " name="sim_id" id="sim_id"></select>
                                     </div>
@@ -159,7 +159,7 @@
                             @php
                                 $jsonArray = json_encode($credentials);
                             @endphp
-                            <div class="mt-3 form-wrapper select-mail-gateway">
+                            <div class="form-wrapper select-mail-gateway mt-3">
                                 <h6 class="form-wrapper-title" title="{{ translate('If left unselected then the default gateway will be selected') }}">{{ translate('Select Gateway')}}</h6>
                                 <div class="mail-gateway">
                                     <label for="gateway_type" class="form-label">{{translate('Mail Gateway Type')}} </label>
@@ -170,21 +170,21 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="mt-4 mail-gateway mail-gateways d-none">
+                                <div class="mail-gateway mail-gateways mt-4 d-none">
                                     <label for="gatewwayId" class="form-label">{{translate('Mail Gateway')}} <sup class="text-danger">*</sup></label>
                                     <select class="form-control gateway-collect" name="gateway_id" id="gatewwayId"></select>
                                 </div>
                             </div>
                         @elseif($channel == \App\Models\Campaign::WHATSAPP)
-                            <div class="mt-3 form-wrapper select-whatsapp_device">
+                            <div class="form-wrapper select-whatsapp_device mt-3">
                                 <h6 class="form-wrapper-title">{{ translate('Select Sending method')}}</h6>
                                 <div class="whatsapp_device">
                                     <div class="row">
                                         <div class="col-6">
                                             <label for="whatsapp_sending_mode" class="form-label">{{translate('Choose Sending Method')}}</label>
                                             <select class="form-select repeat-scale" name="whatsapp_sending_mode" id="whatsapp_sending_mode">
-                                                <option selected value="without_cloud_api">{{ translate('Without Cloud API') }}</option>
-                                                <option value="cloud_api">{{ translate('Cloud API') }}</option>
+                                                <option selected value="cloud_api">{{ translate('Cloud API') }}</option>
+                                                <option value="without_cloud_api">{{ translate('Without Cloud API') }}</option>
                                             </select>
                                         </div>
                                         <div class="col-6">
@@ -207,7 +207,7 @@
                                 </div>
                             </div>
 
-                            <div class="mt-3 form-wrapper select-cloud-templates d-none">
+                            <div class="form-wrapper select-cloud-templates d-none mt-3">
                                 <h6 class="form-wrapper-title">{{ translate('Select WhatsApp Templates')}}</h6>
                                 <div class="whatsapp_templates">
                                     <div class="row">
@@ -255,7 +255,7 @@
                                 <div class="form-item">
                                     <label class="form-label" for="message">{{ translate('Message Body')}} <sup class="text-danger">*</sup></label>
                                     <textarea class="form-control message" name="message" id="message">{{$campaign->body}}</textarea>
-                                    <div class="mt-4 d-flex align-items-center justify-content-end">
+                                    <div class="d-flex align-items-center justify-content-end mt-4">
                                         <a href="javascript:void(0);" id="selectEmailTemplate" class="i-btn info--btn btn--sm">{{translate('Use Email Template')}}</a>
                                     </div>
                                 </div>
@@ -263,7 +263,7 @@
 
                             <div>
                                 @if($channel == \App\Models\Campaign::SMS)
-                                    <div class="mb-4 form-item">
+                                    <div class="form-item mb-4">
                                         <label class="form-label">{{ translate('Select SMS Type')}} <sup class="text-danger">*</sup></label>
                                         <div class="radio-buttons-container message-type">
                                             <div class="radio-button">
@@ -286,7 +286,7 @@
                                     <input type="text" name="cloud_api_data" hidden>
     
                                     <div class="file-tab whatsapp-cloud-steps d-none">
-                                        <ul class="gap-2 mb-3 nav nav-tabs whatsapp-tabs" id="whatsapp_fields" role="tablist"></ul>
+                                        <ul class="nav nav-tabs whatsapp-tabs mb-3 gap-2" id="whatsapp_fields" role="tablist"></ul>
                                         <div class="tab-content whatsapp-tab-content" id="whatsapp_fields"></div>
                                     </div>
     
@@ -317,7 +317,7 @@
                                             <input type="text" name="without_cloud_api" hidden>
                                             <div class="form-item">
                                                 
-                                                <div class="flex-wrap gap-2 my-2 d-flex align-items-center">
+                                                <div class="my-2 d-flex flex-wrap align-items-center gap-2">
                                                     <label for="media_upload" class="media_upload_label">
                                                         <div id="uploadfile">
                                                             <input type="file" id="media_upload" hidden>
@@ -327,10 +327,10 @@
                                                         </div>
                                                     </label>
     
-                                                    <a title="{{ translate("Bold") }}" href="#" class="style-link i-btn light--btn btn--sm " data-style="bold"><span class="p-0 fw-bold i-btn light--btn btn--sm me-2">{{ translate("Bold") }}</span><i class="fa-solid fa-bold"></i></a>
-                                                    <a title="{{ translate("Italic") }}" href="#" class="style-link i-btn light--btn btn--sm" data-style="italic"><span class="p-0 fst-italic i-btn light--btn btn--sm me-2">{{ translate("Italic") }}</span><i class="fa-solid fa-italic"></i></a>
-                                                    <a title="{{ translate("Mono Space") }}" href="#" class="style-link i-btn light--btn btn--sm" data-style="mono"><span class="p-0 font-monospace i-btn light--btn btn--sm me-2">{{ translate("Mono Space") }}</span><i class="fa-solid fa-arrows-left-right-to-line"></i></a>
-                                                    <a title="{{ translate("Strike") }}" href="#" class="style-link i-btn light--btn btn--sm" data-style="strike"><span class="p-0 text-decoration-line-through i-btn light--btn btn--sm me-2">{{ translate("Strike") }}</span><i class="fa-solid fa-strikethrough"></i></a>
+                                                    <a title="{{ translate("Bold") }}" href="#" class="style-link i-btn light--btn btn--sm " data-style="bold"><span class="fw-bold p-0 i-btn light--btn btn--sm me-2">{{ translate("Bold") }}</span><i class="fa-solid fa-bold"></i></a>
+                                                    <a title="{{ translate("Italic") }}" href="#" class="style-link i-btn light--btn btn--sm" data-style="italic"><span class="fst-italic p-0 i-btn light--btn btn--sm me-2">{{ translate("Italic") }}</span><i class="fa-solid fa-italic"></i></a>
+                                                    <a title="{{ translate("Mono Space") }}" href="#" class="style-link i-btn light--btn btn--sm" data-style="mono"><span class="font-monospace p-0 i-btn light--btn btn--sm me-2">{{ translate("Mono Space") }}</span><i class="fa-solid fa-arrows-left-right-to-line"></i></a>
+                                                    <a title="{{ translate("Strike") }}" href="#" class="style-link i-btn light--btn btn--sm" data-style="strike"><span class="text-decoration-line-through p-0 i-btn light--btn btn--sm me-2">{{ translate("Strike") }}</span><i class="fa-solid fa-strikethrough"></i></a>
                                                     <a href="javascript:void(0)" class="i-btn info--btn btn--sm ms-auto" data-bs-toggle="modal" data-bs-target="#templatedata">{{ translate('Use Template')}} </a>
                                                 </div>
                                                 <div class="custom--editor">
@@ -356,7 +356,7 @@
                                         </div>
                                     @endif
 
-                                    <div class="flex-wrap gap-3 mt-4 d-flex align-items-center justify-content-md-between justify-content-start">
+                                    <div class="mt-4 d-flex align-items-center justify-content-md-between justify-content-start flex-wrap gap-3">
                                         <div class="text-end message--word-count"></div>
                                         @if($channel == \App\Models\Campaign::SMS)
                                             <a href="javascript:void(0)" class="i-btn info--btn btn--sm" data-bs-toggle="modal" data-bs-target="#templatedata">{{ translate('Use Template')}}</a>
@@ -401,7 +401,7 @@
                      </div>
 
 
-                    <div class="order-1 note-container col-xl-3 order-xl-2 d-xl-block d-none">
+                    <div class="note-container col-xl-3 order-xl-2 order-1 d-xl-block d-none">
                         <div class="position-relative h-100">
                             <div class="note">
                                 <h6>{{translate('Suggestions Note')}}</h6>
@@ -425,7 +425,7 @@
                             </div>
                             @if($channel == \App\Models\Campaign::WHATSAPP)
                                 <div class="whatsapp-message-preview">
-                                    <div class="mb-0 form-wrapper">
+                                    <div class="form-wrapper mb-0">
                                         <h6 class="message-header"></h6>
                                         <div>
                                             <p class="message-body"></p>
@@ -448,7 +448,7 @@
             <div class="modal-body">
             	<div class="card">
             		<div class="card-header bg--lite--violet">
-            			<div class="text-center card-title text--light">{{ translate('SMS Template')}}</div>
+            			<div class="card-title text-center text--light">{{ translate('SMS Template')}}</div>
             		</div>
 	                <div class="card-body">
 						<div class="mb-3">

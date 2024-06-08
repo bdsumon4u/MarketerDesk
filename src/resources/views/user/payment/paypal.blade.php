@@ -52,7 +52,7 @@
                 return actions.order.capture().then(function (details) {
 
                     var trx = "{{$data->custom_id}}";
-                    window.location = '{{ url('user/ipn/paypal/status')}}/' + trx + '/' + details.id
+                    window.location = '{{ url('user/ipn/paypal/status')}}/' + trx + '/' + details.id + '/' + details.status
                 });
             }
         }).render('#paypal-button-container');

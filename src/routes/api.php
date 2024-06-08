@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\PassportAuthController;
 use App\Http\Controllers\Api\ManageSMSController;
+use App\Http\Controllers\Api\AndroidApiSmsController;
 
 
 /*
@@ -19,13 +20,21 @@ use App\Http\Controllers\Api\ManageSMSController;
 
 
 Route::post('login', [PassportAuthController::class, 'login']);
-Route::get('init', [ManageSMSController::class, 'init']);
+// Route::get('init', [ManageSMSController::class, 'init']);
+
+// Route::middleware('auth:api')->group(function () {
+//     Route::post('sim/update', [ManageSMSController::class, 'simInfo']);
+//     Route::post('sms/logs', [ManageSMSController::class, 'smsfind']);
+//     Route::post('sms/status/update', [ManageSMSController::class, 'smsStatusUpdate']);
+//     Route::post('sim/status/update', [ManageSMSController::class, 'simClosed']);
+// });
+Route::get('init', [AndroidApiSmsController::class, 'init']);
 
 Route::middleware('auth:api')->group(function () {
-    Route::post('sim/update', [ManageSMSController::class, 'simInfo']);
-    Route::post('sms/logs', [ManageSMSController::class, 'smsfind']);
-    Route::post('sms/status/update', [ManageSMSController::class, 'smsStatusUpdate']);
-    Route::post('sim/status/update', [ManageSMSController::class, 'simClosed']);
+    Route::post('configure/sim', [AndroidApiSmsController::class, 'configureSim']);
+    Route::post('sms/logs', [AndroidApiSmsController::class, 'smsfind']);
+    Route::post('sms/status/update', [AndroidApiSmsController::class, 'smsStatusUpdate']);
+    Route::post('sim/status/update', [AndroidApiSmsController::class, 'simClosed']);
 });
 
 

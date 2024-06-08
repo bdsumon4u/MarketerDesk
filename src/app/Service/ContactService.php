@@ -24,7 +24,7 @@ class ContactService
 { 
     //Contact 
         public function contactSave($general, $data, $user_id = null) {
-
+            
             try {
 
                 if($data["single_contact"] == "true") {
@@ -154,7 +154,7 @@ class ContactService
             
         public function importContactFormFile($name, $filePath, $data, $group_id, $user_id = null) {
 
-            $file = storage_path("../../$filePath/$name");
+            $file = "$filePath/$name";
             $row_data = Excel::toArray(new ContactImport, $file);
             $data["user_id"] = $user_id;
             if($data["new_row"] == "true") {
@@ -373,7 +373,7 @@ class ContactService
 
     //Contact Group
 
-        public function groupSave($uid = null, $data) {
+        public function groupSave($data, $uid = null) {
             try {
                 
                 Group::updateOrCreate([ 

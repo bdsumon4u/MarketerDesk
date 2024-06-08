@@ -264,11 +264,10 @@ class ReportController extends Controller
         ]);
         $general     = GeneralSetting::first();
         $paymentData = PaymentLog::where('id',$request->id)->where('status',1)->first();
-    
         $paymentData->feedback = $request->input('feedback');
         $paymentData->status = 2;
         $paymentData->save();
-       
+        
         $subscription = Subscription::where('id', $paymentData->subscriptions_id)->first();
         $last_expired_plan = Subscription::where("status", Subscription::EXPIRED)->latest()->first();
         $last_renewed_plan = Subscription::where("status", Subscription::RENEWED)->latest()->first();
@@ -284,20 +283,28 @@ class ReportController extends Controller
                 Subscription::where("status", Subscription::EXPIRED)->update(["status" => Subscription::INACTIVE]);
             }
         }
-        Subscription::where('user_id', auth()->user()->id)->where('status', 1)->delete();
-        AndroidApi::where(["user_id" => auth()->user()->id, "status" => 1])->update(["status" => 2]);
-        WhatsappDevice::where(["user_id" => auth()->user()->id, "status" => "connected"])->update(["status" => "disconnected"]);
+        
+        Subscription::where('user_id', $paymentData->user_id)->where('status', 1)->delete();
+        AndroidApi::where(["user_id" => $paymentData->user_id, "status" => 1])->update(["status" => 2]);
+        WhatsappDevice::where(["user_id" => $paymentData->user_id, "status" => "connected"])->update(["status" => "disconnected"]);
+        
+        
+        
         $subscription->status        = Subscription::RUNNING;
         $subscription->plan_id       = $subscription->plan->id;
         $subscription->amount        = $subscription->plan->amount;
         $subscription->expired_date  = $subscription->expired_date->addDays($subscription->plan->duration);
         $subscription->save();
-        $previousSubs = Subscription::where('user_id', auth()->user()->id)->where('status', 3)->pluck('id');
+       
+
+        $previousSubs = Subscription::where('user_id', $paymentData->user_id)->where('status', 3)->pluck('id');
+        
+        
         
         if ($previousSubs->isNotEmpty()) {
             Subscription::destroy($previousSubs->toArray());
         } 
-        PaymentLog::where('user_id', auth()->user()->id)->where('status', 1)->update(['status' => 3, 'feedback' => "Transaction Process Did Not Complete!"]);
+        PaymentLog::where('user_id',$paymentData->user_id)->where('status', 1)->update(['status' => 3, 'feedback' => "Transaction Process Did Not Complete!"]);
         $user = User::find($paymentData->user_id);
         if($subscription->status == Subscription::RENEWED && $subscription->plan->carry_forward == 1) {
             $user->credit += $subscription->plan->sms->credits;

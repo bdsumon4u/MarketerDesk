@@ -4,8 +4,8 @@ namespace App\Enums;
  
 enum StatusEnum {
 
-    case true;
-    case false;
+    case TRUE;
+    case FALSE;
 
     /**
      * get enum status
@@ -14,18 +14,26 @@ enum StatusEnum {
     {
         return match($this) 
         {
-            StatusEnum::true => '1',   
-            StatusEnum::false => '0',   
+            StatusEnum::TRUE => '1',   
+            StatusEnum::FALSE => '2',   
         };
     }
 
 
     public static function toArray() :array{
         return [
-            'Active' => (StatusEnum::true)->status(),
-            'Inactive' => (StatusEnum::false)->status()
+            'Active' => (StatusEnum::TRUE)->status(),
+            'Inactive' => (StatusEnum::FALSE)->status()
         ];
     }
+
+    public static function getBoolean(int $value) {
+
+        return match ($value) {
+            self::TRUE  => true,
+            self::FALSE => false,
+        };
+    } 
 
   
    

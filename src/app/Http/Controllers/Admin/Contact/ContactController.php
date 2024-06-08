@@ -11,6 +11,7 @@ use App\Models\Group;
 use App\Service\ContactService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\HeadingRowImport;
@@ -95,7 +96,7 @@ class ContactController extends Controller
      * @param ContactRequest $request
     */ 
     public function store(ContactRequest $request) {
-       
+        
         $data = $request->all();
         unset($data["_token"]);
         $data = $this->contactService->contactSave($this->general, $data);
@@ -197,7 +198,7 @@ class ContactController extends Controller
 
             $file = $request->file('file');
             $extension = $file->getClientOriginalExtension();
-            $directory = public_path("../../assets/file/contact/temporary");
+            $directory = "assets/file/contact/temporary";
            
             if (!File::isDirectory($directory)) {
                 File::makeDirectory($directory, 0755, true, true);
@@ -207,7 +208,7 @@ class ContactController extends Controller
             $filePath = $directory . '/' . $fileName;
             
             $file->move($directory, $fileName);
-            $filePath = public_path("../../assets/file/contact/temporary/{$fileName}");
+            $filePath = "assets/file/contact/temporary/{$fileName}";
             return response()->json(["status" => true, "file_name" => $fileName, "file_path" => $filePath]);
 
         } catch (\Exception $e) {
@@ -215,15 +216,14 @@ class ContactController extends Controller
             return response()->json(["status" => false]);
         }
     }
-
     /** 
      * Key Mapping file remove
     */ 
-
+    
     public function deleteFile(Request $request) {
 
         $fileName = $request->input('file_name');
-        $filePath = public_path("../../assets/file/contact/temporary/{$fileName}");
+        $filePath = "assets/file/contact/temporary/{$fileName}";
 
         try {
             if (File::exists($filePath)) {
@@ -236,7 +236,6 @@ class ContactController extends Controller
             return response()->json(['status' => false, 'message' => 'Error deleting file.']);
         }
     }
-
     /** 
      * Key Mapping parsing
     */ 

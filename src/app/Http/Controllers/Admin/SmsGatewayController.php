@@ -26,9 +26,10 @@ class SmsGatewayController extends Controller
 
     public function android()
     {
+        $general = GeneralSetting::first();
     	$title = "Android Gateway list";
         $androids = AndroidApi::where('admin_id', auth()->guard('admin')->user()->id)->orderBy('id', 'DESC')->paginate(paginateNumber());
-    	return view('admin.android.gateways', compact('title', 'androids'));
+    	return view('admin.android.gateways', compact('title', 'androids', 'general'));
     }
    
 
@@ -39,10 +40,11 @@ class SmsGatewayController extends Controller
     public function store(Request $request) {
     
         $this->validate($request, [
-        'type'               => "required",
-        'driver_information' => ["required"],
-        'name'               => ["required"],
-        'status'             => "required|in:0,1",
+            
+            'type'               => "required",
+            'driver_information' => ["required"],
+            'name'               => ["required"],
+            'status'             => "required|in:0,1",
         ]);
 
         $sms                     = new Gateway();

@@ -4,6 +4,10 @@
 /storage/*.key
 /storage/framework/views/*
 /vendor
+/storage
+/resources/lang/
+/lang
+/aseets/file
 .env
 .env.backup
 .phpunit.result.cache

@@ -38,36 +38,55 @@ class PaymentWithPaypal extends Controller
         $this->_api_context->setConfig($paypal_configuration['settings']);
     }
 
-    public function getPaymentStatus(Request $request, ? string $trx_code = null, ? string $type = null )
-    {        
-       
-        $paymentLog    = PaymentLog::where('status', 0)->where('trx_number', $trx_code)->first();
+    public function getPaymentStatus(Request $request, string $trx_code, string $id, string $status)
+    {
+        $paymentLog = PaymentLog::where('status', 0)->where('trx_number', $trx_code)->first();
         $paymentMethod = PaymentMethod::where('unique_code', "PAYPAL102")->first();
-        if(!$paymentLog){
-           abort(404);
+    
+        if (!$paymentLog) {
+            abort(404);
         }
-        $url         = "https://api.paypal.com/v2/checkout/orders/{$type}";
-        $client_id   = $paymentMethod->payment_parameter->client_id;
-        $secret      = $paymentMethod->payment_parameter->secret;
+    
+        $url = "https://api.paypal.com/v2/checkout/orders/{$id}";
+        $client_id = $paymentMethod->payment_parameter->client_id;
+        $secret = $paymentMethod->payment_parameter->secret;
+        
         $headers = [
             'Content-Type:application/json',
             'Authorization:Basic ' . base64_encode("{$client_id}:{$secret}")
         ];
-        $response     = $this->curlGetRequestWithHeaders($url, $headers);
-        $paymentData  = json_decode($response, true);
-
-        if (isset($paymentData['status']) && $paymentData['status'] == 'COMPLETED') {
-
+        $response = $this->curlGetRequestWithHeaders($url, $headers);
+        
+        $paymentData = json_decode($response, true);
+    
+        if ((isset($paymentData['status']) && $paymentData['status'] == 'COMPLETED') || ($status && $status == 'COMPLETED')) {
             $paymentTrackNumber = session()->get('payment_track');
-            $paymentLog = PaymentLog::where('trx_number', $paymentTrackNumber)->first();       
+            $paymentLog = PaymentLog::where('trx_number', $paymentTrackNumber)->first();
             PaymentController::paymentUpdate($paymentLog->trx_number);
             $notify[] = ['success', 'Payment successful!'];
-            return redirect()->route('user.dashboard')->withNotify($notify);
-           
+            return redirect()->route('user.plan.create')->withNotify($notify);
         } else {
-            $notify[] = ['error', 'Payment failed !!'];
-            return redirect()->route('user.dashboard')->withNotify($notify);
+            $response = json_decode($response, true);
+            
+            if(array_key_exists('error', $response)) {
+                $error = $response["error"].', '.$response['error_description'];
+            }
+            $notify[] = ['error', "Payment failed! ". textFormat(['_'], $error)];
+            return redirect()->route('user.plan.create')->withNotify($notify);
         }
-
     }
+
+    private function curlGetRequestWithHeaders($url, $headers)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $result = curl_exec($ch);
+        curl_close($ch);
+        return $result;
+    }
+
+    
 }

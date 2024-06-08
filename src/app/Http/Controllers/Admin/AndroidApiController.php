@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\AndroidApi;
 use App\Models\AndroidApiSimInfo;
+use App\Models\GeneralSetting;
 use Illuminate\Support\Facades\Hash;
 
 class AndroidApiController extends Controller
@@ -85,4 +86,18 @@ class AndroidApiController extends Controller
         $notify[] = ['success', 'Android Gateway sim has been deleted'];
         return back()->withNotify($notify);
     }
+
+	public function linkStore(Request $request) {
+
+		$request->validate([
+			'app_link'     => ['required', 'url'],
+			
+		]);
+
+		$general = GeneralSetting::first();
+		$general->app_link = $request->input("app_link");
+		$general->save();
+		$notify[] = ['success', 'Apk file link added'];
+        return back()->withNotify($notify);
+	}
 }

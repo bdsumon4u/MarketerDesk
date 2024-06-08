@@ -8,7 +8,11 @@
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title">{{translate("Android Gateway")}}</h4>
+                        <a href="{{ $general->app_link }}" class="i-btn info--btn btn--md text-white"  title="{{translate('Download APK file')}}">
+                            {{translate('Download APK file')}}
+                        </a>
                     </div>
+                   
                     <div class="card-body px-0">
                         <div class="responsive-table">
                             <table class="m-0 text-center table--light">

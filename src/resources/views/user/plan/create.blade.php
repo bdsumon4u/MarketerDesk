@@ -9,8 +9,7 @@
 			{{ translate('Choose the plan that fits
 			your needs.')}}
 		</h2>
-		<p class="mt-2">{{translate('Our pricing plans are designed to be affordable, flexible, and
-                tailored to your unique needs')}}.</p>
+		<p class="mt-2">{{translate('Our pricing plans are designed to be affordable, flexible, and tailored to your unique needs')}}.</p>
 	</div>
 
 	<div class="pricing-container">
@@ -51,25 +50,24 @@
 										@endif
 										@if($plan->sms->android->is_allowed == true || $plan->whatsapp->is_allowed == true || $plan->sms->is_allowed == true || $plan->email->is_allowed == true)
 											
-											@if($plan->sms->android->is_allowed == true && $plan->whatsapp->is_allowed == true)
-												@if($plan->type == App\Models\PricingPlan::USER && $plan->sms->android->is_allowed == true && $plan->whatsapp->is_allowed == true)
-												
-													@if($plan->sms->android->is_allowed == true)
-														<li>{{ translate('Add ')}} <b class="{{ $plan->sms->android->gateway_limit == 0 ? "text--primary" : "" }}">{{ $plan->sms->android->gateway_limit == 0 ? "unlimited" : $plan->sms->android->gateway_limit }}</b> <b>{{ translate(" Android Gateways")}}</b></li>
-													@endif
-													@if($plan->whatsapp->is_allowed == true)
-														<li>{{ translate('Add ')}} <b class="{{ $plan->whatsapp->gateway_limit == 0 ? "text--primary" : "" }}">{{ $plan->whatsapp->gateway_limit == 0 ? "unlimited" : $plan->whatsapp->gateway_limit }}</b> <b>{{translate(" Whatsapp devices")}}</b></li>
-													@endif
-												
-												@elseif($plan->type == App\Models\PricingPlan::ADMIN && $plan->sms->android->is_allowed == true && $plan->whatsapp->is_allowed == true)
-													
-													<li>{{ translate("Use Admin's Gateways for: ")}}<b>
-														@if($plan->sms->is_allowed == true) {{ translate(" SMS ") }} @endif
-														@if($plan->sms->android->is_allowed == true) {{ translate(" Android ") }} @endif
-														@if($plan->email->is_allowed == true) {{ translate(" Email ") }} @endif
-													</b></li>
-													
+											
+											@if($plan->type == App\Models\PricingPlan::USER && ($plan->sms->android->is_allowed == true || $plan->whatsapp->is_allowed == true))
+											
+												@if($plan->sms->android->is_allowed == true)
+													<li>{{ translate('Add ')}} <b class="{{ $plan->sms->android->gateway_limit == 0 ? "text--primary" : "" }}">{{ $plan->sms->android->gateway_limit == 0 ? "unlimited" : $plan->sms->android->gateway_limit }}</b> <b>{{ translate(" Android Gateways")}}</b></li>
 												@endif
+												@if($plan->whatsapp->is_allowed == true)
+													<li>{{ translate('Add ')}} <b class="{{ $plan->whatsapp->gateway_limit == 0 ? "text--primary" : "" }}">{{ $plan->whatsapp->gateway_limit == 0 ? "unlimited" : $plan->whatsapp->gateway_limit }}</b> <b>{{translate(" Whatsapp devices")}}</b></li>
+												@endif
+											
+											@elseif($plan->type == App\Models\PricingPlan::ADMIN && $plan->sms->android->is_allowed == true && $plan->whatsapp->is_allowed == true)
+												
+												<li>{{ translate("Use Admin's Gateways for: ")}}<b>
+													@if($plan->sms->is_allowed == true) {{ translate(" SMS ") }} @endif
+													@if($plan->sms->android->is_allowed == true) {{ translate(" Android ") }} @endif
+													@if($plan->email->is_allowed == true) {{ translate(" Email ") }} @endif
+												</b></li>
+												
 											@endif
 
 											@if($plan->type == App\Models\PricingPlan::ADMIN)
