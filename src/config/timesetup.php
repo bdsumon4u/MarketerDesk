@@ -1,1 +1,1 @@
-<?php $timelog = 'UTC' ?>
+<?php $timelog = 'Asia/Dhaka' ?>
