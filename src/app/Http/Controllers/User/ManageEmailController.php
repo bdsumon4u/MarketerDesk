@@ -17,18 +17,20 @@ use Closure;
 use App\Models\User;
 use App\Service\SmsService;
 
-class ManageEmailController extends Controller {
-    
+class ManageEmailController extends Controller
+{
+
     public EmailService $emailService;
     public SmsService $smsService;
     public CustomerService $customerService;
-    
-    public function __construct(EmailService $emailService, CustomerService $customerService, SmsService $smsService) {
-        
+
+    public function __construct(EmailService $emailService, CustomerService $customerService, SmsService $smsService)
+    {
+
         $this->middleware(function (Request $request, Closure $next) {
-            
-            if(Auth::user()->email_credit == 0 && in_array(str_replace('user.manage.email.', '', Route::currentRouteName()),  ['send', 'store'])) {
-               
+
+            if (Auth::user()->email_credit == 0 && in_array(str_replace('user.manage.email.', '', Route::currentRouteName()),  ['send', 'store'])) {
+
                 $notify[] = ['error', 'You no longer have sufficient Email credits. Please purchase a new subscription plan.'];
                 return redirect()->route('user.dashboard')->withNotify($notify);
             }
@@ -40,7 +42,8 @@ class ManageEmailController extends Controller {
         $this->smsService      = $smsService;
     }
 
-    public function create() {
+    public function create()
+    {
 
         $user = Auth::user();
         $title = "Compose Email";
@@ -48,100 +51,95 @@ class ManageEmailController extends Controller {
         $credentials = config('setting.gateway_credentials.email');
         $allowed_access = planAccess($user);
         $channel     = "email";
-        if($allowed_access) {
+        if ($allowed_access) {
             $allowed_access = (object)planAccess($user);
         } else {
-            $notify[] = ['error','Please Purchase A Plan'];
+            $notify[] = ['error', 'Please Purchase A Plan'];
             return redirect()->route('user.dashboard')->withNotify($notify);
         }
 
-        if($allowed_access->type == PricingPlan::USER && $user->gateway->isNotEmpty() && $user->gateway()->mail()->active()->exists()) {
+        if ($allowed_access->type == PricingPlan::USER && $user->gateway->isNotEmpty() && $user->gateway()->mail()->active()->exists()) {
 
             return view('user.email.create', compact('title', 'emailGroups', 'credentials', 'user', 'allowed_access', 'channel'));
-        } elseif($allowed_access->type == PricingPlan::ADMIN) {
+        } elseif ($allowed_access->type == PricingPlan::ADMIN) {
             return view('user.email.create', compact('title', 'emailGroups', 'credentials', 'user', 'allowed_access', 'channel'));
-        }
-        else{
+        } else {
             $notify[] = ['error', 'Can Not Compose Mail. No Active Gateway Found'];
             return back()->withNotify($notify);
         }
-        
-        
-        
     }
 
     public function index()
     {
-    	$title = "All Email History";
+        $title = "All Email History";
         $user = Auth::user();
         $emailLogs = EmailLog::where('user_id', $user->id)->orderBy('id', 'DESC')->with('sender')->paginate(paginateNumber());
-    	return view('user.email.index', compact('title', 'emailLogs'));
+        return view('user.email.index', compact('title', 'emailLogs'));
     }
 
     public function store(StoreEmailRequest $request)
     {
-        
+
         $user = Auth::user();
         $allowed_access   = (object) planAccess($user);
-        if($user->email_credit == 0) {
-            
+        if ($user->email_credit == 0) {
+
             $notify[] = ['error', 'Not enough Email Credits, please purchase a new plan.'];
             return back()->withNotify($notify);
         }
 
         $defaultGateway = $allowed_access->type == PricingPlan::USER ? Gateway::whereNotNull('mail_gateways')->where("user_id", $user->id)->where('is_default', 1)->first()
-                          : Gateway::whereNotNull('mail_gateways')->whereNull("user_id")->where('is_default', 1)->first();
-        
-        if($request->input('gateway_type')) {
+            : Gateway::whereNotNull('mail_gateways')->whereNull("user_id")->where('is_default', 1)->first();
+
+        if ($request->input('gateway_type')) {
 
             $emailMethod = Gateway::where('id', $request->input('gateway_id'))->firstOrFail();
-        }
-        else{
-            if($defaultGateway) {
+        } else {
+            if ($defaultGateway) {
                 $emailMethod = $defaultGateway;
-            }
-            else {
+            } else {
                 $notify[] = ['error', 'You Do Not Have Any Default Gateway.'];
                 return back()->withNotify($notify);
             }
         }
-        
-        $subscription = Subscription::where('user_id',$user->id)
-            ->where('status','1')
+
+        $subscription = Subscription::where('user_id', $user->id)
+            ->where('status', '1')
             ->get();
 
-        if(count($subscription) == 0){
+        if (count($subscription) == 0) {
             $notify[] = ['error', 'Your Subscription Is Expired! Buy A New Plan'];
             return back()->withNotify($notify);
         }
 
-        if(!$user->email){
+        if (!$user->email) {
             $notify[] = ['error', 'Please add your email from profile'];
             return back()->withNotify($notify);
         }
 
-        if(!$request->input('email') && !$request->input('group_id') && !$request->has('file')){
+        if (!$request->input('email') && !$request->input('group_id') && !$request->file) {
             $notify[] = ['error', 'Invalid email format'];
             return back()->withNotify($notify);
         }
 
-        if($request->has('file')) {
+        if ($request->file) {
             $extension = strtolower($request->file('file')->getClientOriginalExtension());
             if (!in_array($extension, ['csv', 'xlsx'])) {
                 $notify[] = ['error', 'Invalid file extension'];
                 return back()->withNotify($notify);
             }
         }
-        $numberGroupName = []; $allContactNumber = [];
-        $this->emailService->processEmail($request,$allContactNumber, $user->id);
+        $numberGroupName = [];
+        $allContactNumber = [];
+        $this->emailService->processEmail($request, $allContactNumber, $user->id);
         $this->smsService->processGroupId($request, $allContactNumber, $numberGroupName, $user->id);
         $this->smsService->processFile($request, $allContactNumber, $numberGroupName);
-       
-        $emailAllNewArray = $this->emailService->flattenAndUnique($allContactNumber);
-       
-        
 
-        if(count($emailAllNewArray) > $user->email_credit){
+        $emailAllNewArray = $this->emailService->flattenAndUnique($allContactNumber);
+
+
+
+        if (count($emailAllNewArray) > $user->email_credit) {
             $notify[] = ['error', 'You do not have a sufficient email credit for send mail'];
             return back()->withNotify($notify);
         }
@@ -158,7 +156,7 @@ class ManageEmailController extends Controller {
     {
         $title = "Details View";
         $user = Auth::user();
-        $emailLogs = EmailLog::where('id',$id)->where('user_id',$user->id)->orderBy('id', 'DESC')->limit(1)->first();
+        $emailLogs = EmailLog::where('id', $id)->where('user_id', $user->id)->orderBy('id', 'DESC')->limit(1)->first();
         return view('partials.email_view', compact('title', 'emailLogs'));
     }
 
@@ -183,21 +181,21 @@ class ManageEmailController extends Controller {
 
     public function emailStatusUpdate(Request $request)
     {
-       
+
         $request->validate([
             'id' => 'nullable|exists:email_logs,id',
             'status' => 'required|in:1,4',
         ]);
-      
-        if($request->input('email_log_id') !== null){
-            $emailLogIds = array_filter(explode(",",$request->input('email_log_id')));
-           
-            if(!empty($emailLogIds)){
+
+        if ($request->input('email_log_id') !== null) {
+            $emailLogIds = array_filter(explode(",", $request->input('email_log_id')));
+
+            if (!empty($emailLogIds)) {
                 $this->emailLogStatusUpdate((int) $request->input('status'),  $emailLogIds);
             }
         }
 
-        if($request->has('id')){
+        if ($request->has('id')) {
             $this->emailLogStatusUpdate((int) $request->status, (array) $request->input('id'));
         }
 
@@ -208,51 +206,50 @@ class ManageEmailController extends Controller {
     private function emailLogStatusUpdate(int $status, array $emailLogIds): void
     {
 
-        foreach($emailLogIds as $emailLogId){
+        foreach ($emailLogIds as $emailLogId) {
             $emailLog = EmailLog::find($emailLogId);
-          
-            if(!$emailLog){
-               
+
+            if (!$emailLog) {
+
                 continue;
             }
 
-            if($status == 1){
-             
-                if($emailLog->user_id) {
+            if ($status == 1) {
+
+                if ($emailLog->user_id) {
 
                     $user = User::find($emailLog->user_id);
-                    if($user->email_credit > 1) {
+                    if ($user->email_credit > 1) {
                         $this->customerService->deductEmailCredit($user, 1);
 
                         $emailLog->status = $status;
                         $emailLog->update();
                     }
                 }
-            }
-            else{
-              
+            } else {
+
                 $emailLog->status = $status;
-               
+
                 $emailLog->update();
             }
         }
     }
 
     //Select Gateway
-    public function selectGateway(Request $request) {
-        
+    public function selectGateway(Request $request)
+    {
+
         $user = Auth::user();
         $allowed_access = planAccess($user);
-        if($allowed_access) {
+        if ($allowed_access) {
             $allowed_access = (object)planAccess($user);
         } else {
-            $notify[] = ['error','Please Purchase A Plan'];
+            $notify[] = ['error', 'Please Purchase A Plan'];
             return redirect()->route('user.dashboard')->withNotify($notify);
         }
-                            
-        
+
+
 
         return response()->json($rows);
     }
-
 }

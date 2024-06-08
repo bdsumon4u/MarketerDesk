@@ -17,6 +17,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+
 class EmailService
 {
     /**
@@ -25,14 +26,15 @@ class EmailService
      * @param $userId
      * @return void
      */
-    public function processEmail(Request $request, array &$allContactNumber, $userId = null): void {
-      
-        if($request->has('email')) {
+    public function processEmail(Request $request, array &$allContactNumber, $userId = null): void
+    {
+
+        if ($request->has('email')) {
 
             $email = Contact::query();
             $email->whereIn('id', $request->input('email'));
 
-           
+
             if (!is_null($userId)) {
 
                 $email->where('user_id', $userId);
@@ -40,30 +42,31 @@ class EmailService
 
                 $email->whereNull('user_id');
             }
-            $emailArray = $email->pluck('email_contact','id')->toArray();
-           
-            $allContactNumber[] = array_values($emailArray) + array_diff($request->input('email') , $emailArray);
+            $emailArray = $email->pluck('email_contact', 'id')->toArray();
+
+            $allContactNumber[] = array_values($emailArray) + array_diff($request->input('email'), $emailArray);
         }
     }
 
-    public function searchEmailLog($search, $searchDate): \Illuminate\Database\Eloquent\Builder {
+    public function searchEmailLog($search, $searchDate): \Illuminate\Database\Eloquent\Builder
+    {
 
         $emailLogs = EmailLog::query();
         if (!empty($search)) {
-            $emailLogs->whereHas('sender',function ($q) use ($search) {
+            $emailLogs->whereHas('sender', function ($q) use ($search) {
                 $q->where('subject', 'like', "%$search%")
                     ->orWhere('to', 'like', "%$search%");
             });
         }
         if (!empty(request()->input('status'))) {
-            $status = match (request()->input('status')){
+            $status = match (request()->input('status')) {
                 'pending'   => [1],
                 'schedule'  => [2],
                 'fail'      => [3],
                 'delivered' => [4],
-                default     => [1,2,3,4],
+                default     => [1, 2, 3, 4],
             };
-            $emailLogs->whereIn('status',$status);
+            $emailLogs->whereIn('status', $status);
         }
         if (!empty($searchDate)) {
 
@@ -91,8 +94,8 @@ class EmailService
      */
     public function processEmailGroup(Request $request, array &$allEmail, array &$emailGroupName, $userId = null): void
     {
-        
-        if($request->has('email_group_id')){
+
+        if ($request->has('email_group_id')) {
             $emailContact = EmailContact::query();
             $emailContact->whereIn('email_group_id', $request->input('email_group_id'));
 
@@ -116,25 +119,25 @@ class EmailService
      */
     public function processEmailFile(Request $request, array &$allEmail, array &$emailGroupName): void
     {
-       
-        if($request->has('file')) {
 
-           
+        if ($request->file) {
+
+
             $service   = new FileProcessService();
             $extension = strtolower($request->file('file')->getClientOriginalExtension());
 
-            if($extension == "csv") {
+            if ($extension == "csv") {
 
                 $response       =  $service->processCsv($request->file('file'));
-                
+
                 $allEmail[]     = array_keys($response);
                 $emailGroupName = $emailGroupName + $response;
             };
 
-            if($extension == "xlsx") {
+            if ($extension == "xlsx") {
 
                 $response       = $service->processExel($request->file('file'));
-                
+
                 $allEmail[]     = array_keys($response);
                 $emailGroupName = $emailGroupName + $response;
             }
@@ -166,10 +169,10 @@ class EmailService
     public function getFinalContent(string $value, array $emailGroupName, string $content): string
     {
         $content      = buildDomDocument($content);
-        $finalContent = str_replace('{{name}}',$value, $content);
+        $finalContent = str_replace('{{name}}', $value, $content);
 
-        if(array_key_exists($value,$emailGroupName)){
-            $finalContent = str_replace('{{name}}', $emailGroupName ? $emailGroupName[$value]:$value, $content);
+        if (array_key_exists($value, $emailGroupName)) {
+            $finalContent = str_replace('{{name}}', $emailGroupName ? $emailGroupName[$value] : $value, $content);
         }
 
         return $finalContent;
@@ -186,68 +189,63 @@ class EmailService
      */
     public function sendEmail(array $emailAllNewArray, Gateway $emailMethod, StoreEmailRequest $request, array $emailGroupName, $userId = null): void
     {
-        foreach($emailAllNewArray as $value) {
-            if(!filter_var($value, FILTER_VALIDATE_EMAIL)){
+        foreach ($emailAllNewArray as $value) {
+            if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
                 continue;
             }
             $prepare  = $this->prepParams($value, $request, (int)$emailMethod->id, $emailGroupName, $userId);
             $emailLog = $this->save($prepare);
-            if ($request->input('schedule') == 1 && $emailLog->status == 1) { 
-                
-                if(count($emailAllNewArray) > 1) {
-                    
+            if ($request->input('schedule') == 1 && $emailLog->status == 1) {
+
+                if (count($emailAllNewArray) > 1) {
+
                     ProcessEmail::dispatch($emailLog);
                 } else {
-               
-                $general       = GeneralSetting::first();
-                $emailTo       = $emailLog->to;
-                $subject       = $emailLog->subject;
-                $messages      = $emailLog->message;
-                $emailFrom     = $general->mail_from;
-                $emailFromName = $general->site_name;
-                $emailReplyTo  = $general->mail_from;
-                $emailMethod   = Gateway::whereNotNull('mail_gateways')->where('status',1)->where('id', $emailLog->sender_id)->first();
-                $user          = User::where('id', $emailLog->user_id)->first();
 
-                if(is_null($emailLog->user_id)) { 
+                    $general       = GeneralSetting::first();
+                    $emailTo       = $emailLog->to;
+                    $subject       = $emailLog->subject;
+                    $messages      = $emailLog->message;
+                    $emailFrom     = $general->mail_from;
+                    $emailFromName = $general->site_name;
+                    $emailReplyTo  = $general->mail_from;
+                    $emailMethod   = Gateway::whereNotNull('mail_gateways')->where('status', 1)->where('id', $emailLog->sender_id)->first();
+                    $user          = User::where('id', $emailLog->user_id)->first();
 
-                    $admin          = Admin::first();
-                    $emailFrom      = $emailMethod->address;
-                    $emailFromName  = is_null($emailLog->from_name) ? $emailMethod->name : $emailLog->from_name;
-                    $emailReplyTo   = is_null($emailLog->reply_to_email) ? $admin->email : $emailLog->reply_to_email;
-                }
+                    if (is_null($emailLog->user_id)) {
 
-                if($user) {
+                        $admin          = Admin::first();
+                        $emailFrom      = $emailMethod->address;
+                        $emailFromName  = is_null($emailLog->from_name) ? $emailMethod->name : $emailLog->from_name;
+                        $emailReplyTo   = is_null($emailLog->reply_to_email) ? $admin->email : $emailLog->reply_to_email;
+                    }
 
-                    $emailMethod    = Gateway::whereNotNull('mail_gateways')->where('status',1)->where('id', $emailLog->sender_id)->firstOrFail();
-                    $emailFrom      = $emailMethod->address;
-                    $emailFromName  = $emailLog->from_name ?? $emailMethod->name;
-                    $emailReplyTo   = $emailLog->reply_to_email ?? $user->email;
-                }
+                    if ($user) {
 
-                if($emailLog->sender->type == 'smtp') {
+                        $emailMethod    = Gateway::whereNotNull('mail_gateways')->where('status', 1)->where('id', $emailLog->sender_id)->firstOrFail();
+                        $emailFrom      = $emailMethod->address;
+                        $emailFromName  = $emailLog->from_name ?? $emailMethod->name;
+                        $emailReplyTo   = $emailLog->reply_to_email ?? $user->email;
+                    }
 
-                    SendEmail::sendSMTPMail($emailTo, $emailReplyTo, $subject, $messages, $emailLog,  $emailMethod, $emailFromName);
-                }
-                elseif($emailLog->sender->type == "mailjet") {
+                    if ($emailLog->sender->type == 'smtp') {
 
-                    SendEmail::sendMailJetMail($emailFrom, $subject, $messages, $emailLog, $emailMethod);
-                }
-                elseif($emailLog->sender->type == "aws") {
+                        SendEmail::sendSMTPMail($emailTo, $emailReplyTo, $subject, $messages, $emailLog,  $emailMethod, $emailFromName);
+                    } elseif ($emailLog->sender->type == "mailjet") {
 
-                    SendEmail::sendSesMail($emailFrom, $subject, $messages, $general, $emailMethod); 
-                }
-                elseif($emailLog->sender->type  == "mailgun") {
-                    
-                    SendEmail::sendMailGunMail($emailFrom, $subject, $messages, $general, $emailMethod); 
-                }
-                elseif($emailLog->sender->typ == "sendgrid") {
+                        SendEmail::sendMailJetMail($emailFrom, $subject, $messages, $emailLog, $emailMethod);
+                    } elseif ($emailLog->sender->type == "aws") {
 
-                    SendEmail::sendGrid($emailFrom, $emailFromName, $emailTo, $subject, $messages, $emailLog, @$emailMethod->mail_gateways->secret_key);
+                        SendEmail::sendSesMail($emailFrom, $subject, $messages, $general, $emailMethod);
+                    } elseif ($emailLog->sender->type  == "mailgun") {
+
+                        SendEmail::sendMailGunMail($emailFrom, $subject, $messages, $general, $emailMethod);
+                    } elseif ($emailLog->sender->typ == "sendgrid") {
+
+                        SendEmail::sendGrid($emailFrom, $emailFromName, $emailTo, $subject, $messages, $emailLog, @$emailMethod->mail_gateways->secret_key);
+                    }
                 }
             }
-                
-            } 
         }
     }
 
@@ -262,9 +260,9 @@ class EmailService
     public function prepParams(string $value, StoreEmailRequest $request, int $emailMethodId, array $emailGroupName, $userId): array
     {
         $setTimeInDelay = Carbon::now();
-        
-       
-        if($request->input('schedule') == 2){
+
+
+        if ($request->input('schedule') == 2) {
             $setTimeInDelay = $request->input('schedule_date');
         }
 
@@ -308,7 +306,8 @@ class EmailService
      * @param $errorMessage
      * @return void
      */
-    public static function emailSendFailed(EmailLog $emailLog, $errorMessage): void {
+    public static function emailSendFailed(EmailLog $emailLog, $errorMessage): void
+    {
 
         $emailLog->status           = EmailLog::FAILED;
         $emailLog->response_gateway = $errorMessage;
@@ -328,8 +327,8 @@ class EmailService
             $emailCredit->save();
         }
 
-        if($emailLog->contact_id){
-            CampaignContact::where('id',$emailLog->contact_id)->update([
+        if ($emailLog->contact_id) {
+            CampaignContact::where('id', $emailLog->contact_id)->update([
                 "status" => 'Fail'
             ]);
         }

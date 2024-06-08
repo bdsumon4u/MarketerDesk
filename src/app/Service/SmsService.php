@@ -324,7 +324,7 @@ class SmsService {
      */
     public function processFile(Request $request, array &$allContactNumber, array &$numberGroupName): void {
        
-        if ($request->has('file')) {
+        if ($request->file) {
 
             $service   = new FileProcessService();
             $extension = strtolower($request->file('file')->getClientOriginalExtension());

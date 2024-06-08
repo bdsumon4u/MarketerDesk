@@ -19,40 +19,43 @@ use App\Http\Requests\StoreWhatsAppRequest;
 use App\Models\PricingPlan;
 use App\Models\WhatsappTemplate;
 
-class ManageWhatsappController extends Controller {
+class ManageWhatsappController extends Controller
+{
 
     public SmsService $smsService;
     public WhatsAppService $whatsAppService;
     public CustomerService $customerService;
 
-    public function __construct(WhatsAppService $whatsAppService, SmsService $smsService, CustomerService $customerService) {
+    public function __construct(WhatsAppService $whatsAppService, SmsService $smsService, CustomerService $customerService)
+    {
 
         $this->smsService      = $smsService;
         $this->whatsAppService = $whatsAppService;
         $this->customerService = $customerService;
         $this->middleware(function (Request $request, Closure $next) {
-            
+
             if (Auth::user()->whatsapp_credit == 0 && in_array(str_replace('user.whatsapp.', '', Route::currentRouteName()),  ['send', 'store'])) {
-               
+
                 $notify[] = ['error', 'You no longer have sufficient Whatsapp credits. Please purchase a new subscription plan.'];
                 return redirect()->route('user.dashboard')->withNotify($notify);
             }
             return $next($request);
         });
     }
-    public function create() {
+    public function create()
+    {
 
         $channel          = "whatsapp";
         $user             = Auth::user();
         $groups           = $user->group()->get();
         $templates        = $user->template()->get();
-    	$title            = "Compose WhatsApp Massage";
-        $allowed_access   = (object) planAccess($user); 
+        $title            = "Compose WhatsApp Massage";
+        $allowed_access   = (object) planAccess($user);
         if ($allowed_access->type == PricingPlan::USER) {
 
             $whatsapp_node_devices  = WhatsappDevice::where("user_id", $user->id)->where('status', WhatsappDevice::CONNECTED)->where("type", WhatsappDevice::NODE)->latest()->get();
             $whatsapp_bussiness_api = WhatsappDevice::where("user_id", $user->id)->where("type", WhatsappDevice::BUSINESS)->latest()->get();
-            
+
             return view('user.whatsapp.create', compact('title', 'groups', 'templates', 'whatsapp_node_devices', 'whatsapp_bussiness_api', 'channel', 'allowed_access'));
         } else {
 
@@ -61,83 +64,78 @@ class ManageWhatsappController extends Controller {
         }
     }
 
-    public function index() {
+    public function index()
+    {
 
         $user         = Auth::user();
-    	$title        = "WhatsApp History";
+        $title        = "WhatsApp History";
         $whatsAppLogs = WhatsappLog::where('user_id', $user->id)->orderBy('id', 'DESC')->with('whatsappGateway')->paginate(paginateNumber());
 
-    	return view('user.whatsapp.index', compact('title', 'whatsAppLogs'));
+        return view('user.whatsapp.index', compact('title', 'whatsAppLogs'));
     }
 
-    public function store(StoreWhatsAppRequest $request) {
-        
-        
+    public function store(StoreWhatsAppRequest $request)
+    {
+
+
         $user    = Auth::user();
         $general = GeneralSetting::first();
-        session()->put('old_wa_message',$request->input('message') ? $request->input('message') : "");
+        session()->put('old_wa_message', $request->input('message') ? $request->input('message') : "");
 
-        $subscription = Subscription::where('user_id',$user->id)->where('status','1')->get();
-        
+        $subscription = Subscription::where('user_id', $user->id)->where('status', '1')->get();
+
         if (count($subscription) == 0) {
 
             $notify[] = ['error', 'Your Subscription Is Expired! Buy A New Plan'];
             return back()->withNotify($notify);
         }
 
-      
+
         $allowed_access = (object) planAccess($user);
-        
+
         if ($allowed_access->type == PricingPlan::USER) {
 
-          
-            if ($request->input("cloud_api") == "true" ) {
 
-                $allAvailableWaGateway = WhatsappDevice::where("id",$request->input("whatsapp_device_id"))->pluck("id")->toArray();
-            
+            if ($request->input("cloud_api") == "true") {
+
+                $allAvailableWaGateway = WhatsappDevice::where("id", $request->input("whatsapp_device_id"))->pluck("id")->toArray();
+
                 $templateData    = WhatsappTemplate::find($request->input("whatsapp_template_id"));
-                
-                if(!$templateData) {
-    
+
+                if (!$templateData) {
+
                     $notify[] = ['error', 'Template Unavailable'];
                     return back()->withNotify($notify);
                 }
-                
             } else {
 
                 $this->whatsAppService->fileValidationRule(request());
                 $allAvailableWaGateway = $request->input("whatsapp_device_id") == "-1" ? WhatsappDevice::where("user_id", $user->id)->where("type", WhatsappDevice::NODE)->where('status', 'connected')->pluck("credentials", "id")->toArray()
-                                         : WhatsappDevice::where("user_id", $user->id)->where("id", $request->input("whatsapp_device_id"))->where("type", WhatsappDevice::NODE)->where('status', 'connected')->pluck("credentials", "id")->toArray();
-               
+                    : WhatsappDevice::where("user_id", $user->id)->where("id", $request->input("whatsapp_device_id"))->where("type", WhatsappDevice::NODE)->where('status', 'connected')->pluck("credentials", "id")->toArray();
             }
             if (!$allAvailableWaGateway) {
 
                 $notify[] = ['error', 'User doesnt have any whatsapp gateway without cloud API'];
                 return back()->withNotify($notify);
             }
-            
-
-            
         } else {
-           
-            if ($request->input("cloud_api") == "true" ) {
 
-                $allAvailableWaGateway = WhatsappDevice::where("id",$request->input("whatsapp_device_id"))->pluck("id")->toArray();
-            
+            if ($request->input("cloud_api") == "true") {
+
+                $allAvailableWaGateway = WhatsappDevice::where("id", $request->input("whatsapp_device_id"))->pluck("id")->toArray();
+
                 $templateData    = WhatsappTemplate::find($request->input("whatsapp_template_id"));
-    
-                if(!$templateData) {
-    
+
+                if (!$templateData) {
+
                     $notify[] = ['error', 'Template Unavailable'];
                     return back()->withNotify($notify);
                 }
-                
             } else {
 
                 $this->whatsAppService->fileValidationRule(request());
                 $allAvailableWaGateway = $request->input("whatsapp_device_id") == "-1" ? WhatsappDevice::where("user_id", $user->id)->where("type", WhatsappDevice::NODE)->where('status', 'connected')->pluck("credentials", "id")->toArray()
-                                         : WhatsappDevice::where("user_id", $user->id)->where("id", $request->input("whatsapp_device_id"))->where("type", WhatsappDevice::NODE)->where('status', 'connected')->pluck("credentials", "id")->toArray();
-               
+                    : WhatsappDevice::where("user_id", $user->id)->where("id", $request->input("whatsapp_device_id"))->where("type", WhatsappDevice::NODE)->where('status', 'connected')->pluck("credentials", "id")->toArray();
             }
             if (!$allAvailableWaGateway) {
 
@@ -146,20 +144,20 @@ class ManageWhatsappController extends Controller {
             }
         }
 
-        if (!$request->input('number') && !$request->input('group_id') && !$request->has('file')) {
+        if (!$request->input('number') && !$request->input('group_id') && !$request->file) {
 
             $notify[] = ['error', 'Invalid number collect format'];
             return back()->withNotify($notify);
         }
 
-        
+
         if (count($allAvailableWaGateway) < 1) {
 
             $notify[] = ['error', 'Not available WhatsApp Gateway'];
             return back()->withNotify($notify);
         }
 
-        if ($request->has('file')) {
+        if ($request->file) {
 
             $extension = strtolower($request->file('file')->getClientOriginalExtension());
             if (!in_array($extension, ['csv', 'xlsx'])) {
@@ -169,7 +167,8 @@ class ManageWhatsappController extends Controller {
             }
         }
 
-        $allContactNumber = []; $numberGroupName  = [];
+        $allContactNumber = [];
+        $numberGroupName  = [];
 
         $this->smsService->processNumber(request(), $allContactNumber);
         $this->smsService->processGroupId(request(), $allContactNumber, $numberGroupName, $user->id);
@@ -177,7 +176,7 @@ class ManageWhatsappController extends Controller {
 
         $contactNewArray = $this->smsService->flattenAndUnique($allContactNumber);
         $wordLength      = $general->whatsapp_word_count;
-        $messages        = str_split($request->input('message'),$wordLength);
+        $messages        = str_split($request->input('message'), $wordLength);
         $totalCredit     = count($contactNewArray) * count($messages);
 
         if ($totalCredit > $user->whatsapp_credit) {
@@ -185,7 +184,7 @@ class ManageWhatsappController extends Controller {
             $notify[] = ['error', 'You do not have a sufficient credit for send message'];
             return back()->withNotify($notify);
         }
-        
+
         $this->customerService->deductWhatsAppCredit($user, (int)$totalCredit, count($contactNewArray));
         $this->whatsAppService->save(\request(), $contactNewArray, (int)$wordLength, $numberGroupName, $allAvailableWaGateway, $user->id, $request->input("cloud_api") == "true" ? $templateData : null, $allowed_access);
 
@@ -211,7 +210,7 @@ class ManageWhatsappController extends Controller {
         $whatsAppLogs = $this->whatsAppService->searchWhatsappLog($search, $searchDate);
         $whatsAppLogs = $whatsAppLogs->where('user_id', $user->id)->paginate(paginateNumber());
 
-        $title = 'Email History Search - ' . $search . ' '.$searchDate.' '.$status;
+        $title = 'Email History Search - ' . $search . ' ' . $searchDate . ' ' . $status;
         return view('user.whatsapp.index', compact('title', 'whatsAppLogs', 'search', 'searchDate', 'status'));
     }
 
@@ -222,14 +221,14 @@ class ManageWhatsappController extends Controller {
             'status' => 'required|in:1,4',
         ]);
 
-        if($request->input('smslogid') !== null){
-            $smsLogIds = array_filter(explode(",",$request->input('smslogid')));
-            if(!empty($smsLogIds)){
+        if ($request->input('smslogid') !== null) {
+            $smsLogIds = array_filter(explode(",", $request->input('smslogid')));
+            if (!empty($smsLogIds)) {
                 $this->whatsappLogStatusUpdate((int) $request->input('status'), (array) $smsLogIds);
             }
         }
 
-        if($request->has('id')){
+        if ($request->has('id')) {
             $this->whatsappLogStatusUpdate((int) $request->input('status'), (array) $request->input('id'));
         }
 
@@ -240,30 +239,28 @@ class ManageWhatsappController extends Controller {
     {
         $general = GeneralSetting::first();
 
-        foreach($smsLogIds as $smsLogId){
+        foreach ($smsLogIds as $smsLogId) {
             $smslog = WhatsappLog::find($smsLogId);
 
-            if(!$smslog){
+            if (!$smslog) {
                 continue;
             }
 
             $wordLength = $general->whatsapp_word_count;
             $user = User::find($smslog->user_id);
 
-            if($status == WhatsappLog::PENDING && $user){
-                $messages = str_split($smslog->message,$wordLength);
+            if ($status == WhatsappLog::PENDING && $user) {
+                $messages = str_split($smslog->message, $wordLength);
                 $totalCredit = count($messages);
 
-                if($user->credit > $totalCredit){
+                if ($user->credit > $totalCredit) {
                     $smslog->status = $status;
                     $this->customerService->deductWhatsAppCredit($user, $totalCredit, 1);
                 }
-            }else{
+            } else {
                 $smslog->status = $status;
             }
             $smslog->save();
         }
     }
-
 }
-

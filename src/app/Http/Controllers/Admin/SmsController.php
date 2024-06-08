@@ -27,7 +27,8 @@ class SmsController extends Controller
      *
      * @param SmsService $smsService The SMS service.
      */
-    public function __construct(SmsService $smsService) {
+    public function __construct(SmsService $smsService)
+    {
 
         $this->smsService = $smsService;
     }
@@ -37,12 +38,13 @@ class SmsController extends Controller
      *
      * @return \Illuminate\Contracts\View\View View for displaying SMS history.
      */
-    public function index() {
+    public function index()
+    {
 
-    	$title            = "All SMS History";
-    	$smslogs          = SMSlog::orderBy('id', 'DESC')->with('user', 'androidGateway', 'smsGateway')->paginate(paginateNumber());
+        $title            = "All SMS History";
+        $smslogs          = SMSlog::orderBy('id', 'DESC')->with('user', 'androidGateway', 'smsGateway')->paginate(paginateNumber());
         $android_gateways = AndroidApi::where("status", AndroidApi::ACTIVE)->latest()->get();
-    	return view('admin.sms.index', compact('title', 'smslogs', 'android_gateways'));
+        return view('admin.sms.index', compact('title', 'smslogs', 'android_gateways'));
     }
 
     /**
@@ -51,7 +53,8 @@ class SmsController extends Controller
      * @param Request $request object containing search parameters.
      * @return \Illuminate\Contracts\View\View View for displaying search results.
      */
-    public function search(Request $request) {
+    public function search(Request $request)
+    {
 
         $search     = $request->input('search');
         $searchDate = $request->input('date');
@@ -64,7 +67,7 @@ class SmsController extends Controller
 
         $smslogs = $this->smsService->searchSmsLog($search, $searchDate);
         $smslogs = $smslogs->paginate(paginateNumber());
-        $title   = 'SMS History Search - ' . $search . ' '.$searchDate.' '.$status;
+        $title   = 'SMS History Search - ' . $search . ' ' . $searchDate . ' ' . $status;
         $android_gateways = AndroidApi::where("status", AndroidApi::ACTIVE)->latest()->get();
         return view('admin.sms.index', compact('title', 'smslogs', 'search', 'searchDate', 'status', 'android_gateways'));
     }
@@ -75,15 +78,16 @@ class SmsController extends Controller
      * @param Request $request object containing update parameters.
      * @return \Illuminate\Http\RedirectResponse Redirect back with notification.
      */
-    public function smsStatusUpdate(Request $request) {
-        
+    public function smsStatusUpdate(Request $request)
+    {
+
         $request->validate([
             'smslogid' => 'nullable|exists:s_m_slogs,id',
             'status'   => 'required|in:1,3,4',
         ]);
-        
+
         $general   = GeneralSetting::first();
-        $smsLogIds = $request->input('smslogid') !== null ? array_filter(explode(",",$request->input('smslogid'))) : $request->has('smslogid');
+        $smsLogIds = $request->input('smslogid') !== null ? array_filter(explode(",", $request->input('smslogid'))) : $request->has('smslogid');
         $this->smsService->smsLogStatusUpdate((int) $request->status, (array) $smsLogIds, $general, $request->input('android_sim_update') == "true" ? $request->input('sim_id') : null);
 
         $notify[] = ['success', 'SMS status has been updated'];
@@ -95,8 +99,9 @@ class SmsController extends Controller
      *
      * @return \Illuminate\Contracts\View\View View for composing SMS.
      */
-    public function create() {
-        
+    public function create()
+    {
+
         session()->forget(['old_sms_message', 'number']);
 
         $channel          = "sms";
@@ -104,9 +109,9 @@ class SmsController extends Controller
         $general          = GeneralSetting::first();
         $templates        = Template::whereNull('user_id')->get();
         $groups           = Group::whereNull('user_id')->get();
-        $credentials      = SmsGateway::orderBy('id','asc')->get();
+        $credentials      = SmsGateway::orderBy('id', 'asc')->get();
         $android_gateways = AndroidApi::whereNull("user_id")->where("status", AndroidApi::ACTIVE)->latest()->get();
-        
+
         return view('admin.sms.create', compact('title', 'general', 'groups', 'templates', 'credentials', 'android_gateways', 'channel'));
     }
 
@@ -116,19 +121,20 @@ class SmsController extends Controller
      * @param StoreSMSRequest $request object containing SMS data.
      * @return \Illuminate\Http\RedirectResponse Redirect back with notification.
      */
-    public function store(StoreSMSRequest $request):mixed {
+    public function store(StoreSMSRequest $request): mixed
+    {
 
         session()->forget(['old_sms_message', 'number']);
         $allAvailableSims = [];
         $general          = GeneralSetting::first();
-       
+
         if ($general->sms_gateway == 2) {
 
             $allAvailableSims = AndroidApi::whereNull('user_id')->whereHas('simInfo', function ($query) {
 
                 $query->where('status', AndroidApiSimInfo::ACTIVE);
             })->with('simInfo')->get()->flatMap(function ($androidApi) {
-    
+
                 return $androidApi->simInfo->pluck('id')->toArray();
             })->toArray();
 
@@ -144,13 +150,11 @@ class SmsController extends Controller
             $defaultGateway = Gateway::whereNotNull('sms_gateways')->whereNull('user_id')->where('is_default', 1)->first();
             if ($request->input('gateway_id')) {
 
-                $smsGateway = Gateway::whereNotNull('sms_gateways')->whereNull('user_id')->where('id',$request->gateway_id)->firstOrFail();
-            }
-            else {
+                $smsGateway = Gateway::whereNotNull('sms_gateways')->whereNull('user_id')->where('id', $request->gateway_id)->firstOrFail();
+            } else {
                 if ($defaultGateway) {
                     $smsGateway = $defaultGateway;
-                }
-                else {
+                } else {
                     $notify[] = ['error', 'No Available Default SMS Gateway'];
                     return back()->withNotify($notify);
                 }
@@ -161,14 +165,14 @@ class SmsController extends Controller
                 return back()->withNotify($notify);
             }
         }
-        
-        if (!$request->input('number') && !$request->has('group_id') && !$request->has('file')) {
+
+        if (!$request->input('number') && !$request->has('group_id') && !$request->file) {
 
             $notify[] = ['error', 'Invalid number collect format'];
             return back()->withNotify($notify);
         }
 
-        if ($request->has('file')) {
+        if ($request->file) {
 
             $extension = strtolower($request->file('file')->getClientOriginalExtension());
             if (!in_array($extension, ['csv', 'xlsx'])) {
@@ -177,24 +181,26 @@ class SmsController extends Controller
             }
         }
 
-        $numberGroupName = []; $allContactNumber = [];
+        $numberGroupName = [];
+        $allContactNumber = [];
         $this->smsService->processNumber($request, $allContactNumber);
         $this->smsService->processGroupId($request, $allContactNumber, $numberGroupName);
         $this->smsService->processFile($request, $allContactNumber, $numberGroupName);
         $contactNewArray = $this->smsService->flattenAndUnique($allContactNumber);
         $this->smsService->sendSMS($contactNewArray, $general, $smsGateway, $request, $numberGroupName, $allAvailableSims, null);
-        
+
         $notify[] = ['success', 'New SMS request sent, please see in the SMS history for final status'];
         return back()->withNotify($notify);
     }
-    
+
     /**
      * Deletes an SMS log entry.
      *
      * @param Request $request object containing the ID of the SMS log to be deleted.
      * @return \Illuminate\Http\RedirectResponse Redirect back with notification.
      */
-    public function delete(Request $request) {
+    public function delete(Request $request)
+    {
 
         $this->validate($request, [
             'id' => 'required'
@@ -210,7 +216,7 @@ class SmsController extends Controller
                 $user = User::find($smsLog->user_id);
                 if ($user) {
 
-                    $messages      = str_split($smsLog->message,$wordLenght);
+                    $messages      = str_split($smsLog->message, $wordLenght);
                     $totalcredit   = count($messages);
                     $user->credit += $totalcredit;
                     $user->save();
@@ -221,15 +227,15 @@ class SmsController extends Controller
                     $creditInfo->credit      = $totalcredit;
                     $creditInfo->trx_number  = trxNumber();
                     $creditInfo->post_credit =  $user->credit;
-                    $creditInfo->details     = $totalcredit." Credit Return ".$smsLog->to." is Falied";
+                    $creditInfo->details     = $totalcredit . " Credit Return " . $smsLog->to . " is Falied";
                     $creditInfo->save();
                 }
             }
-            
+
             $smsLog->delete();
             $notify[] = ['success', "Successfully SMS log deleted"];
         } catch (Exception $e) {
-            $notify[] = ['error', "Error occur in SMS delete time. Error is ".$e->getMessage()];
+            $notify[] = ['error', "Error occur in SMS delete time. Error is " . $e->getMessage()];
         }
         return back()->withNotify($notify);
     }
