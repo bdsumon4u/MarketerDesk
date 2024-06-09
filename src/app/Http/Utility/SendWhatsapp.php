@@ -95,6 +95,7 @@ class SendWhatsapp
             if ($response) {
 
                 $res = json_decode($response->getBody(), true);
+                info('response', $res);
 
                 if($res['success']) {
 
