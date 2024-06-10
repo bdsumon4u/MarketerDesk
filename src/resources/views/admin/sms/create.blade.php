@@ -15,12 +15,12 @@
                 @csrf
                 <input type="text" name="channel" value="sms" hidden>
                 <div class="row g-4">
-                    <div class="col-xl-9 order-xl-1 order-2">
+                    <div class="order-2 col-xl-9 order-xl-1">
                         <div class="form-wrapper">
                             <h6 class="form-wrapper-title">{{translate('Set Target Audience')}}</h6>
 
                             <div class="file-tab">
-                                <ul class="nav nav-tabs mb-3 gap-2" id="myTabContent" role="tablist">
+                                <ul class="gap-2 mb-3 nav nav-tabs" id="myTabContent" role="tablist">
                                     <li class="nav-item single-audience" role="presentation">
                                         <button class="nav-link active" id="single-tab" data-bs-toggle="tab" data-bs-target="#single-tab-pane" type="button" role="tab" aria-controls="single-tab-pane" aria-selected="true"><i class="las la-user"></i> {{ translate('Single Audience') }}</button>
                                     </li>
@@ -62,7 +62,7 @@
                                                         <span class="slider"></span>
                                                     </label>
                                                 </div>
-                                                <div class="form-item group-logic-items mt-3"></div>
+                                                <div class="mt-3 form-item group-logic-items"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -74,7 +74,7 @@
                                                 <input type="file" name="file" id="file"/>
 
                                                 <label for="file">
-                                                    <div class="d-flex align-items-center gap-3">
+                                                    <div class="gap-3 d-flex align-items-center">
                                                     <span class="upload-drop-file">
                                                         <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"x="0" y="0" viewBox="0 0 128 128" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g><path fill="#f6f0ff" d="M99.091 84.317a22.6 22.6 0 1 0-4.709-44.708 31.448 31.448 0 0 0-60.764 0 22.6 22.6 0 1 0-4.71 44.708z" opacity="1" data-original="#f6f0ff" class=""></path><circle cx="64" cy="84.317" r="27.403" fill="#6009f0" opacity="1" data-original="#6009f0" class=""></circle><g fill="#f6f0ff"><path d="M59.053 80.798v12.926h9.894V80.798h7.705L64 68.146 51.348 80.798zM68.947 102.238h-9.894a1.75 1.75 0 0 1 0-3.5h9.894a1.75 1.75 0 0 1 0 3.5z" fill="#f6f0ff" opacity="1" data-original="#f6f0ff" class=""></path></g></g></svg>
                                                     </span>
@@ -83,7 +83,7 @@
                                                 </label>
                                             </div>
 
-                                            <div class="form-text mt-3">
+                                            <div class="mt-3 form-text">
 
                                                 {{ translate('Download Sample: ')}}
                                                 <a href="{{route('demo.file.download', ['extension' => 'csv' , 'type' => $channel])}}" class="badge badge--primary"><i class="fa fa-download" aria-hidden="true"></i>{{translate('csv')}}</a>
@@ -96,7 +96,7 @@
                         </div>
 
                         @if($general->sms_gateway == 1)
-                            <div class="form-wrapper select-sms-gateway mt-3">
+                            <div class="mt-3 form-wrapper select-sms-gateway">
                                 <h6 class="form-wrapper-title" title="{{ translate('If left unselected then the default gateway will be selected') }}">{{ translate('Select SMS Gateway')}}</h6>
                                 <div class="sms-gateway">
                                     <label for="repeat-time" class="form-label">{{translate('Sms Gateway Type')}} </label>
@@ -107,13 +107,13 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="sms-gateway sms-gateways mt-4 d-none">
+                                <div class="mt-4 sms-gateway sms-gateways d-none">
                                     <label for="gatewwayId" class="form-label">{{translate('Sms Gateway')}} <sup class="text-danger">*</sup></label>
                                     <select class="form-control gateway-collect" name="gateway_id" id="gatewwayId"></select>
                                 </div>
                             </div>
                         @else
-                            <div class="form-wrapper select-android-gateway mt-3">
+                            <div class="mt-3 form-wrapper select-android-gateway">
                                 <h6 class="form-wrapper-title" title="{{ translate('If left unselected then a random sim will be choosen') }}">{{ translate('Select Android Gateway')}}</h6>
                                 <div class="android-gateway">
                                     <label for="android_gateways_id" class="form-label">{{translate('Android Gateway')}} </label>
@@ -124,7 +124,7 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="android-sim mt-4 d-none">
+                                <div class="mt-4 android-sim d-none">
                                     <label for="sim_id" class="form-label">{{translate('Choose A SIM Number')}} <sup class="text-danger">*</sup></label>
                                     <select class="form-select sim-list " name="sim_id" id="sim_id"></select>
                                 </div>
@@ -176,9 +176,9 @@
                                             </span>
                                         </div>
 
-                                        <div class="mt-4 d-flex align-items-center justify-content-md-between justify-content-start flex-wrap gap-3">
+                                        <div class="flex-wrap gap-3 mt-4 d-flex align-items-center justify-content-md-between justify-content-start">
                                             <div class="text-end message--word-count"></div>
-                                            <a href="javascript:void(0)" class="i-btn info--btn btn--sm" data-bs-toggle="modal" data-bs-target="#template-data">{{ translate('Use Template')}}</a>
+                                            <a href="javascript:void(0)" class="i-btn info--btn btn--sm" data-bs-toggle="modal" data-bs-target="#templatedata">{{ translate('Use Template')}}</a>
                                         </div>
 
                                     </div>
@@ -193,7 +193,7 @@
                         </div>
                     </div>
 
-                    <div class="note-container col-xl-3 order-xl-2 order-1 d-xl-block d-none">
+                    <div class="order-1 note-container col-xl-3 order-xl-2 d-xl-block d-none">
                         <div class="note">
                             <h6>{{translate('Suggestions Note')}}</h6>
                             <div class="note-body">
@@ -214,7 +214,7 @@
     </div>
 </section>
 
-<div class="modal fade" id="template-data" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="templatedata" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
 			<div class="modal-header">
@@ -287,7 +287,7 @@
 			$('select[name=template]').on('change', function(){
                 const character = $(this).val();
                 $('textarea[name=message]').val(character);
-				$('#template-data').modal('toggle');
+				$('#templatedata').modal('toggle');
 			});
 
 			$(`textarea[name=message]`).on('keyup', function(event) {

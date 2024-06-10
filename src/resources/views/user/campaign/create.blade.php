@@ -378,7 +378,7 @@
                                         <div class="flex-wrap gap-3 mt-4 d-flex align-items-center justify-content-md-between justify-content-start">
                                             <div class="text-end message--word-count"></div>
                                             @if($channel == \App\Models\Campaign::SMS)
-                                                <a href="javascript:void(0)" class="i-btn info--btn btn--sm" data-bs-toggle="modal" data-bs-target="#template-data">{{ translate('Use Template')}}</a>
+                                                <a href="javascript:void(0)" class="i-btn info--btn btn--sm" data-bs-toggle="modal" data-bs-target="#templatedata">{{ translate('Use Template')}}</a>
                                             @endif
                                         </div>
                                     </div>
@@ -473,7 +473,7 @@
 </section>
 
 
-<div class="modal fade" id="template-data" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="templatedata" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
